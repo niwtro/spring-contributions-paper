@@ -1,0 +1,4169 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass scrreprt
+\begin_preamble
+\usepackage{suetterl}
+\usepackage[T1]{fontenc}
+\usepackage{oldgerm}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language ngerman
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Objektorientierte, modulare Programmierung durch Dependency Injection mittels
+ Contribution Funktionalität.
+\end_layout
+
+\begin_layout Author
+Ortwin Probst - 0026402
+\end_layout
+
+\begin_layout Abstract
+//TODO
+\end_layout
+
+\begin_layout Dedication
+//TODO Widmung
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Einführung
+\end_layout
+
+\begin_layout Section*
+Motivation
+\end_layout
+
+\begin_layout Standard
+Meine Diplomarbeit fällt thematisch in den Bereich Modulare Softwareentwicklung
+ für Java Enterprise Anwendungen.
+ Im Detail stehen Konfigurationsmöglichkeiten für, über Module verteilte
+ Services zur Diskussion (distributed configuration).
+ Dabei beschäftige ich mich im Speziellen mit der sogenannten 
+\begin_inset Quotes eld
+\end_inset
+
+Contribution
+\begin_inset Quotes erd
+\end_inset
+
+ Funktionalität 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "tapestry-iocConfig"
+
+\end_inset
+
+.
+ Dies ist eine Service Konfigurationsmöglichkeit des IOC Containers, der
+ das Kernstück des Apache Tapestry Frameworks 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "tapestry-home"
+
+\end_inset
+
+, einem Java Framework für Web-Anwendungen, bildet.
+ Ziel ist es den Contribution Mechanismus auf das Spring Framework, einem
+ weiteren auf 
+\begin_inset Quotes eld
+\end_inset
+
+Inversion Of Control
+\begin_inset Quotes erd
+\end_inset
+
+ (IOC) basierenden Java Framework, zu übertragen.
+\end_layout
+
+\begin_layout Standard
+Software Module werden im Folgenden nicht als Werkzeug zur Anwendungsmodellierun
+g sondern mehr als konkretes Mittel für die Programmierung mit einer Objektorien
+tierten Programmiersprache betrachtet.
+ Im Speziellen kann diese Art der Verwendung von Modulen auch als weiteres
+ Mittel zur Kapselung in der Objektorientierten Entwicklung betrachtet werden.
+\end_layout
+
+\begin_layout Section*
+Praxisteil
+\end_layout
+
+\begin_layout Standard
+Mein Ausgangspunkt ist das Interesse der Porsche Informatik, eine bestehende,
+ modular entworfene und auf Tapestry basierende Webapplikation, auf das
+ in der Firma zum Standard erklärte IOC Framework Spring umzustellen.
+ Um einen hohen Grad an Modularität zu erreichen wurde die Webapplikation
+ ursprünglich auf dem Open Source Framework Tapestry 5 aufgebaut.
+ Diese Framework bietet einige Techniken die ein modulares Programmieren
+ erleichtern.
+\end_layout
+
+\begin_layout Standard
+Konkret handelt es sich dabei um vier sogenannte Service Builder.
+ Dies sind Methoden, die es ermöglichen, die Konfiguration eines Services
+ aus verschiedenen, von einander unabhängigen Modulen heraus zu erstellen.
+ Dadurch kann die gesamte Anwendung und all ihre Services, nur durch das
+ Einhängen eines weiteren Moduls in den Classpath, um neue Funktionalität
+ erweitert werden.
+ Diese Technik wird in Tapestry 5 als Contribution bezeichnet.
+\end_layout
+
+\begin_layout Standard
+Als anschauliches Beispiel kann man sich den Menü-Service einer Webanwendung
+ vorstellen.
+ Dieser Service wird in Tapestry 5 aus der zusammengeführten Servicekonfiguratio
+n aller Module aufgebaut.
+ D.h.
+ jedes Modul 
+\begin_inset Quotes eld
+\end_inset
+
+contributet
+\begin_inset Quotes erd
+\end_inset
+
+ so zu sagen seinen Teil der Menü Service Konfiguration.
+ Durch das Ein- oder Aushängen eines Moduls, wird die Anwendung dann automatisch
+ um dessen Menüpunkte erweitert oder verringert.
+\end_layout
+
+\begin_layout Standard
+Das Ziel ist es nun zuerst die in Tapestry 5 vorhandene Technik der Service
+ Contributions und dabei konkret die Service Builder (Chain Of Command,
+ Strategy, Pipeline und Shadow Services) für Spring nach zu implementieren.
+ Daraufhin soll ein Weg gefunden werden, die bestehende Webapplikation so
+ um zu stellen, dass anstelle des Tapestry 5 Contribution Systems das neue
+ Spring Contribution System verwendet wird.
+\end_layout
+
+\begin_layout Section*
+Theorieteil
+\end_layout
+
+\begin_layout Standard
+Der theoretische Teil der Arbeit soll sich, ausgehend von einer Betrachtung
+ zu modularem Softwaredesign im Bereich von Java Enterprise Anwendungen,
+ genauer mit den zur Verfügung stehenden Techniken für Modulare Entwicklung
+ auseinandersetzen.
+ Dabei solle einerseits die klassische IOC Technik der Dependency Injection
+ sowie auch die Möglichkeit der Contributions und deren Nutzen erklärt und
+ gezeigt werden.
+ Hier möchte ich die verschiedensten Frameworks (Tapestry 5, Spring, JEE
+ 6 CDI, Guice) miteinander vergleichen und durch den Praxisteil eine konkrete
+ Möglichkeit aufzeigen, wie eben Spring um ein Contribution System ergänzt
+ werden kann.
+\end_layout
+
+\begin_layout Chapter
+Modulare Programmierung (TODO gut so?)
+\end_layout
+
+\begin_layout Standard
+In allen hoch automatisierten Industriellen Fertigungsbereichen ist der
+ Ansatz der Modularisierung heute nicht mehr wegzudenken.
+ Ein Paradebeispiel hierfür ist die Autoindustrie und ihr erfolgreicher
+ Einsatz der Komponentenbauweise.
+ Ohne die Komponentenbauweise wäre die Nachfrage nach Automobilen wahrscheinlich
+ schon seit längerem nicht mehr zu decken.
+\end_layout
+
+\begin_layout Standard
+Seit vielen Jahren wird auch in der Informatik versucht, das Konzept der
+ Modularisierung auch in der Software Entwicklung anzuwenden.
+ Das Ziel war es auch hier Softwarekomponenten zu bauen, die sich durch
+ ihre Eigenschaften dazu eignen in unterschiedlichsten Kompositionen als
+ neue gesamte Anwendung miteinander zusammen zu arbeiten.
+ Mittlerweile sind Softwarekomponenten in der Form von Frameworks sehr verbreite
+t und erfreuen sich auch großer Beliebtheit und Verwendung.
+\end_layout
+
+\begin_layout Standard
+Liest man von Modularer Software Entwicklung, so ist der Blickwinkel meist
+ der eines Anwendungsentwicklers.
+ Hier hat man eine Sichtweise, die ausgehend von der Applikation als Große
+ Einheit versucht deren modularisierten inneren Aufbau zu betrachten.
+ Ich verwende hier mit Modularer Programmierung absichtlich einen leicht
+ anderen Begriff für den inhaltlich gleichen Bereich der Informatik, um
+ auf den etwas anderen Fokus dieser Arbeit hinzuweisen.
+ In beiden Fällen beschäftigen wir uns mit Software Modulen, wenn ich aber
+ Modulare Programmierung sage, dann meine ich nicht den Blickwinkel des
+ Anwendungsentwicklers, sondern den des Modulentwicklers.
+ Diese Sichtweise beschäftigt sich in ihrer Betrachtung mit der kleinen
+ Einheit des Moduls, und deren Zusammenspiel mit anderen Modulen.
+ Der Fokus liegt also auf den Modulen und nicht auf der Applikation.
+\end_layout
+
+\begin_layout Section
+Software Modul bzw.
+ Komponente
+\end_layout
+
+\begin_layout Paragraph*
+Definition (siehe 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Szyperski:1998"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+Ein Software Modul ist eine nach außen hin über Schnittstellen definierte
+ und gekapselte Einheit, die zur Kombination mit anderen Modulen vorgesehen
+ ist.
+ Die Kapselung bezieht sich dabei sowohl auf eine Zusammenfassung des Moduls
+ in einer binären Einheit, als auch auf einen thematisch abgegrenzten Bereich.
+ Die konkrete innere Struktur und Implementierung ist für den Benutzer irrelevan
+t.
+ Es kommt natürlich vor, dass ein Modul die zur Verfügung gestellte Funktionalit
+ät nur in Zusammenarbeit mit anderen Modulen bewerkstelligen kann.
+ Diese Abhängigkeiten sind jedoch nicht auf konkrete Implementierungen bezogen,
+ sondern werden auch über Schnittstellen abgebildet.
+ Das heißt ein Software Modul ist für sich genommen eine unabhängige Einheit.
+ Die positiven Eigenschaften die Softwaremodule (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Positive-Eigenschaften-von-Software-Modulen"
+
+\end_inset
+
+) mit sich bringen, entstehen großteils aus diesem Aspekt der Unabhängigkeit
+ von anderen konkreten Implementierungen.
+ Da sich Module, wie sie im folgenden Kontext verwendet werden in ihren
+ Eigenschaften, nach Szyperskis Definition, nicht von Komponenten unterscheiden,
+ werden im Folgenden beide Begriffe als Synonyme verwendet.
+\end_layout
+
+\begin_layout Subsection
+Service, Service Provider und Consumer
+\end_layout
+
+\begin_layout Subsubsection*
+Definition
+\end_layout
+
+\begin_layout Standard
+(DODO Quelle?) In dieser Arbeit wird der Begriff Service bzw.
+ Dienst als Zusammenfassung für, über Schnittstellen definierte und zur
+ Verfügung gestellte Funktionalität verwendet.
+ In der Informatik wird der Begriff häufig auch im Zusammenhang mit Verteilten
+ Systemen gebraucht und assoziiert eventuell einen verteilten Kontext.
+ Deshalb möchte ich hier explizit darauf hinweisen, dass im Bereich dieser
+ Arbeit ein Service keine Eigenschaften für eine verteilte Anwendung mit
+ sich bringt.
+\end_layout
+
+\begin_layout Standard
+Da der Kontext in dem wir uns hier befinden, die objektorientierte Programmierun
+g ist, verbirgt sich hinter einem Service im Grunde immer ein mehr oder
+ weniger komplexes Objekt.
+ Die Unterscheidung von einem Service zu einem normalen Objekt ist allerdings,
+ dass die Funktionalität eines Service Objekts immer über ein Interface
+ definiert sein muss.
+\end_layout
+
+\begin_layout Standard
+Soll ein Service nicht nur innerhalb eines Moduls sondern auch über Modulgrenzen
+ zur Verfügung gestellt werden, so muss natürlich die Interface Definition
+ für andere Module sichtbar sein.
+ Zur Darstellung der Verwendungsbeziehung eines Service werde ich die Begriffe
+ Service Provider (Service) und Service Consumer (Konsument) verwenden.
+\end_layout
+
+\begin_layout Subsection
+Positive Eigenschaften von Software Modulen
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Positive-Eigenschaften-von-Software-Modulen"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ein Softwaresystem in einem Modularen Design zu entwerfen, ist ein gutes
+ Mittel um Wiederverwendbarkeit (reusability), Austauschbarkeit und Erweiterbark
+eit (plugability), erleichterte Wartung (maintainability) und Testbarkeit
+ (testability) zu ermöglichen.
+\end_layout
+
+\begin_layout Standard
+David Parnas
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Parnas:1972"
+
+\end_inset
+
+spricht von folgenden drei Vorteilen die durch modulare Programmierung entstehen.
+\end_layout
+
+\begin_layout Enumerate
+Verringerung der Entwicklungszeit, da Entwicklergruppen ohne viel Kommunikation
+ getrennt an Modulen arbeiten können.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Steigerung der Flexibilität, durch die Möglichkeit drastische Änderungen
+ in einem Modul vor zu nehmen, ohne dabei andere Module anpassen zu müssen.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Erleichterung der Verständlichkeit des Gesamtsystems, und somit auch die
+ Unterstützung eines besseren Designs.
+\end_layout
+
+\begin_layout Standard
+TODO mehr Inhalt zu den Vorteilen (testability: mocking)
+\end_layout
+
+\begin_layout Subsection
+Modulentwicklung vs.
+ Zusammenstellung modularer Anwendungen
+\end_layout
+
+\begin_layout Standard
+Betrachtet man die modulare Softwareentwicklung, so muss man dabei zwei
+ Bereiche klar voneinander abgrenzen.
+ Zum einen die Entwicklung eines Softwaremoduls und zu anderen der Aufbau
+ einer Modularen Anwendung.
+\end_layout
+
+\begin_layout Standard
+Die Entwicklung eines Moduls ist die Aufgabe eines Modulentwicklers.
+ Dieser ist zuständig für die Implementierung und die Definition der Schnittstel
+len.
+\end_layout
+
+\begin_layout Standard
+Der Aufbau einer modularen Anwendung hingegen wird durch einen Anwendungsentwick
+ler durchgeführt und beschäftigt sich nicht mehr mit der Implementierung,
+ sondern mit der Auswahl, der Kombination und der Konfiguration mehrerer
+ Komponenten zu einer bestimmten Anwendung.
+\end_layout
+
+\begin_layout Section
+Grundvoraussetzungen für Modularisierung
+\end_layout
+
+\begin_layout Standard
+Auf Implementierungsebene gibt es mehrere Voraussetzungen, die zur Entwicklung
+ von Komponenten notwendig sind.
+\end_layout
+
+\begin_layout Subsubsection*
+Lose Kopplung
+\end_layout
+
+\begin_layout Standard
+In der klassischen Objektorientierung entstehen schon zum Zeitpunkt der
+ Programmierung Abhängigkeiten zwischen Objekten.
+ Benötigt zum Beispiel der Konstruktor bzw.
+ die Initialisierungsmethode einer Klasse eine Konkrete andere Klasse, so
+ entsteht hier eine feste Kopplung 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Gamma:1995"
+
+\end_inset
+
+ hin auf eine ganz bestimmte Implementierung.
+ Für die Entwicklung von Services einer Komponenten muss es aber möglich
+ sein, Klassen zu schreiben, deren Laufzeitverhalten nicht schon zum Implementie
+rungszeitpunkt festgelegt ist 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Fabresse:2012"
+
+\end_inset
+
+.
+ Es ist also nötig die Implementierung auf Schnittstellendefinitionen aufzubauen
+ um die Funktionalität zwar zu definieren, aber von einer konkreten Implementier
+ung unabhängig zu halten.
+ So kann die Voraussetzung geschaffen werden, damit Komponenten erst zum
+ Zeitpunkt der Softwareverteilung (deployment), also zum Installationszeitpunkt
+ der Anwendung, oder sogar erst zum Ausführungszeitpunkt eine konkrete Verbindun
+g untereinander aufbauen.
+ So ist es auch für eine Anwendungsentwickler, der keinen Einfluss auf die
+ Implementierung einzelner Komponenten hat, möglich mehrere Softwarekomponente
+ zu einer Anwendung zu kombinieren.
+ (TODO Rückverweis hierher wenn Details zur testability und Unittests kommen)
+\end_layout
+
+\begin_layout Subsubsection*
+Kapselung
+\end_layout
+
+\begin_layout Standard
+Um eine Lose Kopplung zu ermöglichen, benötigt man Mittel zur Kapselung
+ von Programmeinheiten.
+ In der objektorientierten Programmierung ist der Begriff Kapselung, für
+ das Zusammenfassen von Funktionalität in von außen nur über Schnittstellen
+ definierte und angreifbare Einheiten, definiert 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Snyder:1986:EncapsulationAndInheritance"
+
+\end_inset
+
+.
+ Wenn ich hier im Zusammenhang mit der modularen Programmierung von Kapselung
+ spreche, so meine ich hier die Gleiche Definition.
+ Im modularen Kontext verschiebt sich nur die Betrachtungsebene der Kapselung
+ von der Objektebene auf die des Moduls.
+ Module kapseln also ihre Funktionalität in sich und bilden somit eine zusammeng
+ehörige, nur durch Interfaces nach außen definierte und angreifbare Einheit.
+\end_layout
+
+\begin_layout Subsubsection*
+Schnittstellen
+\end_layout
+
+\begin_layout Standard
+Betrachtet man die Lose Kopplung und Kapselung als Grundvoraussetzung für
+ Modularität, so folgt daraus die Möglichkeit von Schnittstellendefinitionen
+ als weitere Grundvoraussetzung.
+ Die Möglichkeit von Schnittstellen bzw.
+ Interfaces ist auf Klassenebene prinzipiell in allen Objektorientierten
+ Sprachen gegeben.
+ Mit diesen ersten drei Grundvoraussetzungen ist es in der objektorientierten
+ Programmierwelt möglich Softwaremodule zu entwickeln.
+\end_layout
+
+\begin_layout Subsubsection*
+Bereitstellung und Konfiguration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Bereitstellung-und-Konfiguration"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Sind die nötigen Schnittstellen einmal definiert und sind die dazugehörigen
+ Modulimplementierungen vorhanden, so ist das nächste zu lösende Problem
+ die Bereitstellung der Services für andere Module.
+ Es muss also ein Weg gefunden werden eine bestimmte Interface Implementierung
+ überall dort zur Laufzeit zur Verfügung zu stellen, wo das Interface verwendet
+ wird.
+\end_layout
+
+\begin_layout Standard
+Dieses Problem kann durch Konfigurationsmechanismen gelöst werden.
+ Man benötigt also eine von den Modulimplementierungen losgelöste Konfiguration,
+ in der im einfachsten, aber nicht unbedingt elegantesten Fall, direkt alle
+ Service Instanzen modulübergreifend für die gesamte Anwendung angelegt
+ und initialisiert werden.
+ Diese Konfiguration bildet dann zusammen mit allen zugehörigen Modulen
+ eine Anwendung.
+\end_layout
+
+\begin_layout Standard
+Es gibt verschiedenste Ansätze, um die Konfiguration möglichst elegant zu
+ lösen.
+ Einige davon werden im Kapitel 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Konfiguration"
+
+\end_inset
+
+ noch genauer beleuchtet werden.
+ Alle Ansätze haben dabei aber die Gemeinsamkeit, dass sie sich auf einen
+ zentralen Dienst stützen.
+ Dieser Dienst bietet zum einen eine Möglichkeit zur Serviceregistrierung,
+ mittels der jedes Modul die Zuordnung von Service Interface zur moduleigenen
+ Implementierung selbst als Konfiguration durchführen kann.
+ Zum anderen stellt er eine Möglichkeit dar, die registrierten Services
+ abzurufen und somit zu verwenden.
+ Dienste die diesen Zweck erfüllen werden oft mit dem Begriff 
+\begin_inset Quotes eld
+\end_inset
+
+Service Registry
+\begin_inset Quotes erd
+\end_inset
+
+ bezeichnet.
+\end_layout
+
+\begin_layout Standard
+Je nach Flexibilitätsgrad ergeben sich unterschiedliche Zeitpunkte zu denen
+ die Anwendungskonfiguration zur Verwendung kommt.
+ Beginnend bei der einfachsten Lösungen über direkte programmatische Instanziier
+ung und Initialisierung, die also schon zur Kompilierzeit die Anwendungszusammen
+stellung genau festlegt.
+ Die konkrete Servicelandschaft der Anwendung erst bei der Anwendungsinstallatio
+n festzulegen, kann zum Beispiel über interne, also sich innerhalb des physische
+n Anwendungspakets befindlichen, Konfigurationsfiles oder Klassen, im Zusammensp
+iel mit Dynamischen Assemblerdiensten (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Dependency-Injection"
+
+\end_inset
+
+) gelöst werden.
+ Liegen die Konfigurationsfiles oder der Konfigurationscode außerhalb des
+ physischen Anwendungspakets, so verschiebt sich der Zeitpunkt der Auflösung
+ auf den Systemstart.
+\end_layout
+
+\begin_layout Standard
+Es gibt sogar Ansätze zur Konfiguration von modularen Anwendungen, die eine
+ Einflussnahme auf Modulabhängigkeiten und Service Konfigurationen noch
+ zur Laufzeit ermöglichen.
+ Ein Komponentensoftwaresystem zur Laufzeit anzupassen, d.h.
+ neue Komponenten einzufügen, andere zu entfernen und gewisse Verbindungen
+ umzustellen, ist eine Eigenschaft die wegen des Aufwands nicht alle komponenten
+orientierten Entwicklungsansätze verfolgen.
+ Als Beispiel für die Anpassbarkeit zu Laufzeit kann hier OSGI, als Spezifikatio
+n einer Modul und Serviceplattform für Java, erwähnt werden.
+ OSGI ist unter anderem im später noch genauer beschriebenen Spring Framework
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Spring-Konfiguration"
+
+\end_inset
+
+) umgesetzte.
+ Die Möglichkeit der Anwendungskonfiguration zur Laufzeit, soll hier aber
+ nur der Vollständigkeit wegen erwähnt sein und wird im Weiteren nicht mehr
+ genauer behandelt.
+\end_layout
+
+\begin_layout Section
+Modularisierung mit 
+\begin_inset Quotes eld
+\end_inset
+
+Inversion of Control
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Moderne Java Frameworks zur Unterstützung von modularer Softwareentwicklung
+ bieten oftmals IOC Container an.
+ Diese Container sind spezielle Formen von Serviceregistries (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Bereitstellung-und-Konfiguration"
+
+\end_inset
+
+) mit deren Hilfe eine Entkopplung von Service Consumer und Provider realisiert
+ werden kann.
+\end_layout
+
+\begin_layout Standard
+TODO Alternativen zu IOC Container Frameworks (siehe ev 1997-Johnson-Frameworks.p
+df)
+\end_layout
+
+\begin_layout Subsection
+\begin_inset Quotes eld
+\end_inset
+
+Inversion of Control
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+„Inversion of Control“ kurz IOC bezeichnet ganz allgemein die Umkehrung
+ eines Kontrollflusses.
+ Kontrollflussumkehrung ist aber ein sehr allgemeines Prinzip und wird somit
+ auch in verschiedensten Ausprägungen in der Softwareentwicklung verwendet.
+ Die für den aktuellen Kontext wichtige Ausprägungsform von IOC als 
+\begin_inset Quotes eld
+\end_inset
+
+Dependency Injection
+\begin_inset Quotes erd
+\end_inset
+
+ wird im nächsten Abschnitt genauer beschrieben (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Dependency-Injection"
+
+\end_inset
+
+).
+ IOC und das Dependency Injection Pattern sind Methoden deren Anwendung
+ meist direkt auf Objektebene verwendet wird.
+ Beide Prinzipien können aber ohne weiteres auch auf der Komponenten Ebene
+ ihre Anwendung finden.
+\end_layout
+
+\begin_layout Paragraph*
+Geschichte
+\end_layout
+
+\begin_layout Standard
+Martin Fowler 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Fowler:2005"
+
+\end_inset
+
+ liefert eine eine Erklärung und Informationen zur Herkunft des Begriffs
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Inversion of Control
+\begin_inset Quotes erd
+\end_inset
+
+ in der Informatik.
+ So findet sich bei Ralph E.
+ Johnson 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Johnson:1988"
+
+\end_inset
+
+ eine frühe Verwendung des Begriffes, wenn die Autoren selbst, wieder auf
+ einen anderen, nicht bekannten Schöpfer des Begriffes verweisen.
+ Mit dem 
+\begin_inset Quotes eld
+\end_inset
+
+Hollywood Principle
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Sweet:1985"
+
+\end_inset
+
+ existierte schon seit 1985 ein weiterer Begriff für das selbe Prinzip auf
+ den auch Erich Gamma et.al.
+ in ihrem bekannten Buch zu Design Patterns 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Gamma:1995"
+
+\end_inset
+
+ Bezug nehmen 
+\begin_inset Quotes eld
+\end_inset
+
+Don'tcall us, we'll call you
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Das Pico Container Framework liefert auf seiner Homepage 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Pico:IOC-History"
+
+\end_inset
+
+weitere Erläuterungen zur Geschichte des IOC Begriffs.
+ Als Wegbereiter des heutigen IOC Begriffs werden hier Robert C.
+ Martin, der unter der Bezeichnung 
+\begin_inset Quotes eld
+\end_inset
+
+Dependency Inversion
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Martin:1996"
+
+\end_inset
+
+ über die Umkehrung von Abhängigkeiten zur Erreichung von unabhängigen Modulen
+ schreibt, Michael Mattesson 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Mattsson96object-orientedframeworks"
+
+\end_inset
+
+, Brian Foote und Joseph Yoder 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Foote:1998-BallOfMud"
+
+\end_inset
+
+ sowie Ralph E.
+ Johnson und Brian Foote 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Johnson:1998-DesigningReusableClasses"
+
+\end_inset
+
+ erwähnt.
+ Weiters finden hier die ersten Umsetzungen des IOC Prinzips mit den Projekten
+ Apache Avalon und OSGi ihre Erwähnung.
+ Folgende Grafik soll die Historie von Fowler und die Timeline von Pico
+ Container zusammenführen und ergänzen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Meilensteine des IOC Pattern
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset VSpace defskip
+\end_inset
+
+
+\begin_inset Graphics
+	filename pics/IOC Timeline.eps
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Bedeutung
+\end_layout
+
+\begin_layout Standard
+Die allgemeine Bedeutung von IOC als Kontrollfluss Umkehr beschreibt Fowler
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Fowler:2004"
+
+\end_inset
+
+ am Beispiel vom Wechsel von einer Kommandozeilen gesteuerten Anwendung,
+ die den Benutzer Schritt für Schritt nach Eingaben fragt, hin zu einem
+ User Interface Steuerung, bei der das UI Benutzereingaben entgegen nimmt
+ und diese an die Anwendung weiterleitet.
+ Hier wurde also der ursprüngliche Kontrollfluss umgekehrt.
+\end_layout
+
+\begin_layout Standard
+Der IOC Begriff wird aber nicht immer so allgemein betrachtet.
+ Das Pico Container Framework zum Beispiel verwendet den Begriff als Zusammenfas
+sung dreier ganz konkreter Techniken (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Pico-Container"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Das allgemeine IOC Prinzip kann als eine Haupteigenschaft von Frameworks
+ betrachtet werden.
+ Frameworks haben im Gegensatz zu einfachen Programmbibliotheken die Kontrolle
+ über ihre Funktionalität großteils selbst inne.
+ Eine Programmbibliothek stellt lediglich Funktionalität für einen Konsumenten
+ zur Verfügung, die Kontrolle über die Funktion geht hier aber vom Konsumenten
+ aus.
+ Ein Framework stellt zwar auch Funktionalität zur Verfügung, im Gegensatz
+ zur Programmbibliothek wird hier aber mit verschiedenen Methoden (Subclassing,
+ Plugins) das eigene Programmverhalten in das Framework eingebunden.
+ Das Verhalten des Frameworks wird so zu sagen für die eigenen Anwendungsbedürfn
+isse konfiguriert.
+\end_layout
+
+\begin_layout Standard
+Dieses Prinzip der externen Konfiguration des Programmverhaltens und der
+ gleichzeitigen Beibehaltung der eigenen Kontrolle des Frameworks über die
+ Funktionen an sich, kann nicht nur auf Frameworks, sondern auch auf Module
+ angewandt werden.
+ Ein Modul, wie zum Beispiel ein Verrechnungsmodul, kapselt einen bestimmten
+ Fachlichen Aspekt und die dazu bereitgestellte Funktionalität (Rechnungserstell
+ung, Stornierung, ...), das konkrete Verhalten im jeweiligen Anwendungskontext
+ des Moduls, muss jedoch von eben diesem Anwendungskontext als Konfiguration
+ bereitgestellt werden.
+ D.h.
+ die Services eines Moduls werden von außen konfiguriert, behalten selbst
+ aber die Kontrolle über ihre primäre Funktionalität.
+ Um derartige Services realisieren und in einem Modul kapseln zu können,
+ muss es möglich sein die Funktionalität eines Services von dessen konkreten
+ Konfiguration zu entkoppeln.
+ Dieses Entkoppeln, als die Möglichkeit zum Auflösen von konkreten Abhängigkeite
+n, ist also eine Hauptvoraussetzung für Modulares Programmieren.
+\end_layout
+
+\begin_layout Standard
+In der Objektorientierten Programmierwelt ist IOC eine der wichtigsten Techniken
+ um eben diese Entkopplung zu erreichen.
+ Auch wenn hier im Allgemeinen oft von IOC gesprochen wird, so ist im Konkreten
+ oft Dependency Injection, eine ganz spezielle Form von IOC gemeint.
+\end_layout
+
+\begin_layout Subsection
+Dependency Injection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Dependency-Injection"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes eld
+\end_inset
+
+Dependency Injection
+\begin_inset Quotes erd
+\end_inset
+
+ (DI) ist ein von Martin Fowler
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Fowler:2004"
+
+\end_inset
+
+ genauer beschriebenes Pattern für die objektorientierte Programmierung,
+ mit dessen Hilfe es möglich wird, einen sogenannten Plugin Mechanismus
+ zu realisieren.
+ D.h.
+ ein Service Consumer muss nur den Interface Typ des benötigten Services
+ kennen, die konkrete Service Implementierung wird durch einen Assembler
+ von außen als Plugin in den Consumer injiziert oder eingehängt (siehe Abbildung
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Dependency Injection"
+
+\end_inset
+
+).
+ In Java gibt es für den Vorgang der Injection mehrere unterschiedliche
+ Ansätze, die je nach Anwendungsfall vor und Nachteile haben können.
+ In der folgenden Auflistung können die ersten drei als die klassischen
+ Wege für Dependency Injection betrachtet werden.
+ Die Annotation Injection ist eine eher neuere Ausprägung des Injection
+ Patterns.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Dependency Injection Pattern
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Dependency Injection"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pics/Dependency Injection-base.eps
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Konstruktor-Injection
+\end_layout
+
+\begin_layout Standard
+Bei dieser Form von Injektion werden alle nötigen Plugins über den Konstruktor
+ des Consumers injiziert.
+ Alle Plugins werden hier also schon bei der Erstellung des Consumers benötigt.
+ Daraus ergeben sich in der Praxis oftmals Probleme (TODO Verweis auf konkrete
+ Problembeschreibung im Praxiskapitel z.B.
+ Zyklus), für deren Lösung moderne IOC Frameworks verschiedene Wege (z.B.
+ Lazy Loading, Proxying) anbieten.
+ Für den Assembler ist es hier wichtig einen bestimmten Konstruktor für
+ den Injizierungsvorgang zur Verfügung zu haben.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Setter-Injection
+\end_layout
+
+\begin_layout Standard
+Wie auch hier schon der Name sagt, werden bei dieser Art der DI, Plugins
+ über, vom Consumer selbst zur Verfügung gestellte Setter, in den Consumer
+ eingehängt.
+ Man benötigt hier für jedes Plugin einen eigenen Setter.
+ Ein besonderer Vorzug der Setter Injection gegenüber der Konstruktor Injection,
+ ist hier, dass der Assembler den Zeitpunkt der Injection beliebig nach
+ der Objekterstellung wählen kann.
+\end_layout
+
+\begin_layout Paragraph
+Interface-Injection
+\end_layout
+
+\begin_layout Standard
+Anstelle von einem Setter pro Plugin, gibt es bei dieser Art der DI für
+ jede Instanzvariable eine über ein Injection Interface definierte Inject
+ Methode zum setzen des jeweiligen Plugins.
+ Das Injection Interface wird immer zusammen mit dem Plugininterface angeboten.
+ Jeder Consumer der Plugins vom Typ des Plugininterfaces verwenden möchte,
+ muss gleichzeitig auch das Injection Interface für diesen Plugintyp implementie
+ren wenn er Plugins injiziert bekommen möchte.
+ Somit stehen dem Assembler die Inject Methode für das Plugin zur Verfügung.
+\end_layout
+
+\begin_layout Paragraph
+Annotation-Injection
+\end_layout
+
+\begin_layout Standard
+Nachdem im Java Release 5.0 Annotationen eingeführt worden waren, wurde dieses
+ neue Feature sogleich von verschiedensten IOC Frameworks verwendet, um
+ eine für den Entwickler sehr komfortable neue Art der DI zu realisieren.
+ Dabei dienen nun Annotationen wie @Autowired (Spring IOC) als Marker für
+ das IOC Framework, mit denen der Entwickler Instanzvariablen für eine durchzufü
+hrende Injection kennzeichnen kann.
+ Wichtig ist hier aber, dass die Instanzvariable eben nicht über einen explizite
+n Setter oder einen Konstruktor injeziert wird.
+ Der Assembler injiziert die Instanzvariable direkt über Java Reflection
+ in das Objekt.
+\begin_inset Newline newline
+\end_inset
+
+Natürlich kann und wird die Markierfunktion von Annotationen auch in Zusammenhan
+g mit allen anderen DI Arten benutzt.
+ In diesen Fällen werden die Annotationen aber lediglich dazu verwendet,
+ um Mehrdeutigkeiten für eine Injection Methode aufzulösen.
+ Für den Fall, dass mehrere Klassen vom selben Typ existieren der injeziert
+ werden soll, bieten viele IOC Frameworks die Möglichkeit an, die Klasse
+ über Injektion-Annotationen und deren Parameter genauer zu spezifizieren,
+ so dass die zu injizierende Klasse wieder eindeutig festzustellen ist.
+ Eine weitere Markierfunktion wird oft angeboten um einen bestimmten Konstruktor
+ für die Konstruktor Injection zu kennzeichnen oder um bestimmte Methoden
+ als Setter für die Setter-Injektion zu markieren.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset Quotes eld
+\end_inset
+
+Service Locator
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Service-Locator"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Eine Alternative zur Entkopplung von Klassen mittels Dependency Injection
+ ist die Verwendung des 
+\begin_inset Quotes eld
+\end_inset
+
+Service Locator
+\begin_inset Quotes erd
+\end_inset
+
+ Patterns.
+ Diese Methode stützt sich auf die zentrale Klasse des 
+\begin_inset Quotes eld
+\end_inset
+
+Service Locators
+\begin_inset Quotes erd
+\end_inset
+
+, der Methoden anbietet, über die man Objekte von einem gewünschten Typ
+ erhält.
+ Anstatt einer Klasse bei ihrer Erstellung nun all ihre Abhängigkeiten mit
+ zu geben, gibt man diese Klasse initial nur den Service Locator mit.
+ Die Kontrolle über das Instanziieren von Instanzvariablen obliegt bei diesem
+ Pattern nun wieder dem Objekt selbst.
+ Benötigt das Objekt nun ein anderes Objekt, so kann es dieses über den
+ Service Locator bekommen.
+ Hier kommt es also nicht zu einer Kontrollfluss Umkehrung wie bei der DI.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Service Locator Pattern
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pics/Service Locator.eps
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Plugin Konfiguration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:seperating configuration from use"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Egal welche Art der DI verwendet wurde um einen Consumer für Plugins vorzubereit
+en, man benötigt zudem eine Plugin Konfiguration, wenn man den Code in einem
+ Programm zur Laufzeit nutzen möchte.
+ 
+\end_layout
+
+\begin_layout Section
+Modularität mit Spring
+\end_layout
+
+\begin_layout Standard
+In den letzten 10 Jahren sind im Bereich der Java Entwicklung einige IOC
+ Container Frameworks entstanden.
+ Der wahrscheinlich bekannteste Vertreter aus dieser Gruppe ist unter dem
+ Namen Spring Framework bekannt.
+\end_layout
+
+\begin_layout Chapter
+IOC Konfiguration
+\end_layout
+
+\begin_layout Standard
+Wie bereits im Abschnitt 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:seperating configuration from use"
+
+\end_inset
+
+ erklärt wurde, muss man bei der Verwendung des Dependency Injection Pattern
+ immer auch eine konkrete Konfiguration für die zur Verfügung stehenden
+ und benötigten Plugins bereit stellen.
+ Wie diese Konfiguration für bestimmte IOC Container konkret aussieht soll
+ im Folgenden beleuchtet werden.
+\end_layout
+
+\begin_layout Section
+Spring
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Spring-Konfiguration"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Spring ist ein mittlerweile sehr weit verbreitetes und äußerst umfangreiches
+ Java Framework.
+ Ungeachtet der zahlreichen Erweiterungen die das Framework seit seinem
+ ersten Release erfahren hat , ist der Kern des Spring Frameworks immer
+ noch dessen IOC Container.
+ Die zentrale Rolle des IOC Containers führte auch dazu, dass im laufe der
+ Framework Entwicklung mehrere verschiedene Arten zur IOC Konfiguration
+ entstanden sind und aus Gründen der Flexibilität parallel angeboten werden.
+\end_layout
+
+\begin_layout Standard
+Das Java Interface 
+\family sans
+\shape italic
+org.springframework.beans.factory.BeanFactory
+\family default
+\shape default
+ repräsentiert den Spring IOC Container.
+ Über dieses Interface werden alle notwendigen Aktionen abgedeckt.
+ Eine FactoryBean Implementierung kann also zum Registrieren von Objekten
+ (Plugins), zum Instanziieren von registrierten Objekten sowie zur Aufbewahrung
+ und Rückgabe dieser Instanzen verwendet werden.
+ Darüber hinaus übernimmt eine BeanFactory die Aufgabe des Assemblers aus
+ dem DI Pattern.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Spring IOC Konfiguration 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Spring:3.0:TheIoCcontainer"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spring-IOC-Konfiguration"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename pics/container-magic.png
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Eine Klasse deren Lebenszyklus durch den Spring IOC Container verwaltet
+ wird, nennt man ein 
+\begin_inset Quotes eld
+\end_inset
+
+Bean
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Innerhalb eine Spring Anwendung existieren sowohl Beans als auch ganz normale
+ Klassen nebeneinander.
+ Beans sind ebenso nur ganz normale Java Klassen.
+ Um deren Verwaltung überhaupt durchführen zu können, benötigt der IOC Container
+ eine Konfiguration für die Menge der Beans.
+ Diese Konfiguration wird als 
+\begin_inset Quotes eld
+\end_inset
+
+Configuration Metadata
+\begin_inset Quotes erd
+\end_inset
+
+ bezeichnet und enthält Metadaten, die Aussage darüber geben welche Beans
+ überhaupt in einer Anwendung zur Verfügung stehen und welche Abhängigkeiten
+ diese Beans untereinander haben.
+ Spring bietet verschiedenste Implementierungen des FactoryBean Interfaces
+ an.
+ Dabei besteht unter anderem die Möglichkeit die Configuration Metadata
+ direkt über Javacode, oder über Annotationen, oder über XML Files, die
+ aus der historischen Entwicklung heraus in Spring als Standardkonfigurationsmet
+hode gelten, festzulegen.
+ Abbildung 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Spring-IOC-Konfiguration"
+
+\end_inset
+
+ gibt einen Überblick zur Verwendung des Spring IOC Containers.
+\end_layout
+
+\begin_layout Subsection
+Konfiguration
+\end_layout
+
+\begin_layout Standard
+Dieser Abschnitt gibt eine kurze Einführung in die XML Variante der Spring
+ Konfiguration, damit die später folgenden Praxisbeispiele (TODO Verweis)
+ auch verständlich gelesen werden können.
+\end_layout
+
+\begin_layout Standard
+Ein Spring XML Konfigurationsfile beinhaltet immer eine oder mehrere Bean
+ Definitionen.
+ Diese sind durch den XML-Tag 
+\family sans
+\series bold
+<bean>
+\family default
+\series default
+ gekennzeichnet.
+ Alle Bean Definitionen werden innerhalb des Wurzelelements 
+\family sans
+\series bold
+<beans>
+\family default
+\series default
+ angelegt.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+\align left
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+Spring Bean-Definition
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<?xml version="1.0" encoding="UTF-8" ?>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w
+3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/s
+chema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<bean id="MyBeanId" class="MyClass">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<!-- weitere Metadaten zum jeweiligen Bean -->
+\end_layout
+
+\begin_layout Plain Layout
+
+		</bean>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	</beans>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xml>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+Im IOC Container werden diese Informationen gesammelt und zu jedem Bean
+ als 
+\family sans
+\shape italic
+BeanDefinition
+\family default
+\shape default
+ abgelegt.
+\end_layout
+
+\begin_layout Section
+Tapestry
+\end_layout
+
+\begin_layout Standard
+Apache Tapestry ist ein Framework zur Entwicklung von Webanwendungen mit
+ Java.
+ Tapestry unterstützt dabei auch besonders den modularen Aufbau einer Webanwendu
+ng.
+ Auch hier bildet ein Framework eigener IOC Container zusammen mit eine
+ Reihe von Services das Kernstück, um die Konfiguration der Module und ihrer
+ Dienste zu ermöglichen.
+ Durch die Verwendung eines IOC Containers findet die Dependency Injection
+ in ihren verschiedensten Ausprägungen (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Dependency-Injection"
+
+\end_inset
+
+) eine umfassende Verwendung innerhalb aller Teile eines Tapestry Moduls.
+\end_layout
+
+\begin_layout Standard
+Ein mit Tapestry entwickeltes Modul wird als Java Archiv (.jar) gepackt und
+ lässt sich in dieser Form mit anderen Tapestry Modulen kombinieren.
+ Innerhalb des Archivs wird ein Tapestry Modul durch eine Modul Klasse repräsent
+iert.
+ Diese Klasse stellt dem Framework Informationen über die im Modul vorhandenen
+ Services zur Verfügung.
+ Der Inhalt der Modul Klasse entspricht hier dem der Konfiguration Metadaten
+ des Spring Frameworks (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Spring-Konfiguration"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsection
+Konfiguration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Konfiguration"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die Konfiguration eines Tapestry Moduls besteht aus reinem Javacode.
+ Tapestry bietet für das Festlegen der Modul Konfiguration innerhalb der
+ Modul Klasse eigene Namenskonventionen und Annotationen an.
+ Das Framework erkennt dann zum Beispiel am Anfang eines Methodennamen,
+ dass es sich hier um eine Servicedefinition handelt.
+ In der Modul Klasse stehen mehrere Konfigurationsmöglichkeiten zur Verfügung.
+ Folgende vier Arten zeigen einen Großteil der essentiellen Möglichkeiten,
+ wobei wir uns später nur noch mit den ersten beiden beschäftigen werden.
+\end_layout
+
+\begin_layout Itemize
+
+\noun on
+\begin_inset Quotes eld
+\end_inset
+
+Bind
+\begin_inset Quotes erd
+\end_inset
+
+
+\noun default
+: Das Definieren eines Services, durch zuweisen einer Service Implementierung
+ zu dem zugehörigen Service Interface
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes eld
+\end_inset
+
+
+\noun on
+Contribute
+\noun default
+
+\begin_inset Quotes erd
+\end_inset
+
+: Das Bereitstellen von Service Konfigurationsdaten
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes eld
+\end_inset
+
+
+\noun on
+Build
+\noun default
+
+\begin_inset Quotes erd
+\end_inset
+
+: Das Definieren und Bauen eines Services durch expliziten Javacode
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes eld
+\end_inset
+
+
+\noun on
+Decorate
+\noun default
+
+\begin_inset Quotes erd
+\end_inset
+
+: Das Dekorieren eines Services, wie es aus dem 
+\begin_inset Quotes eld
+\end_inset
+
+Decorator Pattern
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Gamma:1995"
+
+\end_inset
+
+ bekannt ist
+\end_layout
+
+\begin_layout Standard
+Eine Servicedefinition in Tapestry entspricht in etwa einer Bean Definition
+ in der Spring Konfiguration.
+ In beiden Fällen handelt es sich um Konfigurationsdaten die dem jeweiligen
+ IOC Container die nötigen Informationen geben, um dem System eine, über
+ ein Interface definierte Funktionalität, bereitstellen zu können.
+\end_layout
+
+\begin_layout Standard
+In Tapestry gibt es verschiedenen Möglichkeiten ein Service zu definieren.
+ Im Allgemeinen existiert für ein Tapestry Service ein Interface und mindestens
+ eine zugehörige Implementierung.
+ Um das Service dem System bekannt zu geben wird die 
+\family sans
+\shape italic
+bind()
+\family default
+\shape default
+ Methode in Zusammenspiel mit dem 
+\family sans
+\shape italic
+org.apache.tapestry5.ioc.ServiceBinder
+\family default
+\shape default
+ verwendet.
+ Über den 
+\family sans
+\shape italic
+
+\begin_inset Quotes eld
+\end_inset
+
+ServiceBinder
+\begin_inset Quotes erd
+\end_inset
+
+
+\family default
+\shape default
+ wird das Framework informiert, welche Serviceimplementierung für ein Service
+ Interface zur Verwendung hinterlegt werden soll (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tapestry-bind"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tapestry-bind"
+
+\end_inset
+
+ Tapestry: Registrierung eines Dienstes 
+\begin_inset Quotes eld
+\end_inset
+
+binding
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	public static void bind(ServiceBinder binder)
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		binder.bind(MyServiceInterface.class, MyServiceImpl.class);
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Eine weitere Möglichkeit der Service Definition passiert über eine sogenannte
+ 
+\family sans
+\shape italic
+
+\begin_inset Quotes eld
+\end_inset
+
+build
+\begin_inset Quotes erd
+\end_inset
+
+
+\family default
+\shape default
+ Methode, die mit dem Service Interface als Rückgabewert definiert wird.
+ Bei dieser Art der Servicedefinition können auch gleich Setupmethoden auf
+ dem Serviceobjekt durchgeführt werden (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tapestry-build"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tapestry-build"
+
+\end_inset
+
+ Tapestry: Definition einer Serviceimplementierung innerhalb der Modulklasse
+ 
+
+\begin_inset Quotes eld
+\end_inset
+
+build
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	public static MyServiceInterface build()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new MyServiceInterface()
+\end_layout
+
+\begin_layout Plain Layout
+
+		{
+\end_layout
+
+\begin_layout Plain Layout
+
+			//service methods and implementation
+\end_layout
+
+\begin_layout Plain Layout
+
+		};
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Konfigurationsmechanismus im Tapestry Framework unterstützt aber nicht
+ nur das Definieren von Services.
+ Eine der besonderen Stärken des Frameworks liegt in der Möglichkeit via
+ IOC einem Service eine Liste von Objekten des selben Interfacetyps zu übergeben.
+ Diese Art der Konfiguration wird in Tapestry mit 
+\begin_inset Quotes eld
+\end_inset
+
+Contribution
+\begin_inset Quotes erd
+\end_inset
+
+ bezeichnet.
+ Eine genaue Beschreibung des Tapestry 
+\begin_inset Quotes eld
+\end_inset
+
+Contribution
+\begin_inset Quotes erd
+\end_inset
+
+ Mechanismus mit allen möglichen Übergabeformen wird im nächsten Kapitel
+ genauer beschrieben.
+\end_layout
+
+\begin_layout Chapter
+Contribution Services
+\end_layout
+
+\begin_layout Section
+Tapestry Contributions
+\end_layout
+
+\begin_layout Standard
+Die meisten Services können die Dienste die sie anbieten nicht komplett
+ selbstständig erledigen.
+ Also haben Services oft Abhängigkeiten auf andere Services.
+ Es gibt viele Fälle in denen eine solche Abhängigkeit nicht nur eine 1:1
+ Beziehung darstellt.
+ Es kommt vor, dass sich ein Service einer ganzen Liste an Implementierungen
+ eines anderen Serviceinterfaces bedient, um seine Aufgaben zu lösen.
+ In einer herkömmlichen Java Anwendung würde diese Liste, bei der Initialisierun
+g des Dienstes, an diesen mitgegeben werden.
+ In einer durch einen IOC Container verwalteten Anwendung, benötigen wir
+ die Möglichkeit, diese Liste als Konfiguration für das Service bereit zu
+ stellen.
+ In Tapestry erledigen wir diese Aufgabe über eine 
+\family sans
+\shape italic
+
+\begin_inset Quotes eld
+\end_inset
+
+contribute
+\begin_inset Quotes erd
+\end_inset
+
+
+\family default
+\shape default
+ Methode.
+ Laut Namenskonvention beginnt diese Methode mit der Bezeichnung 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\shape italic
+contribute
+\family default
+\shape default
+
+\begin_inset Quotes erd
+\end_inset
+
+ gefolgt von dem Namen des Services, für den die Konfiguration gedacht ist
+ (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tapestry-contribute"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Ein großer Vorteil, den diese Art der Servicekonfiguration durch die Indirektion
+ über den IOC Container mit sich bringt, ist die Möglichkeit der Liste,
+ derer sich der Service bedienen soll, modulübergreifend weitere Implementierung
+en hinzuzufügen.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset Quotes eld
+\end_inset
+
+Configuration
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Wenn man nun einem Service eine Liste von Objekten übergeben möchte, so
+ bedient man sich innerhalb der 
+\family sans
+\shape italic
+
+\begin_inset Quotes eld
+\end_inset
+
+contribute
+\begin_inset Quotes erd
+\end_inset
+
+
+\family default
+\shape default
+ Methode eines Konfiguration Objekts
+\end_layout
+
+\begin_layout Standard
+(
+\family sans
+\shape italic
+org.apache.tapestry5.ioc.Configuration<T>
+\family default
+\shape default
+), in dem man die einzelnen Objektdefinitionen ablegen kann.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tapestry-contribute"
+
+\end_inset
+
+ Tapestry: Einfache Listenübergabe
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	public static void contributeMyServiceInterface(Configuration<MyServiceDependen
+cyElement> configuration)
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		configuration.add(new MyServiceDependencyElementImplOne());
+\end_layout
+
+\begin_layout Plain Layout
+
+		configuration.add(new MyServiceDependencyElementImplTwo());
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		// ...
+ more Elements to be added to the list
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Konfigurationsmechanismus im Tapestry Framework unterstützt aber nicht
+ nur eine einfache Listenübergabe über das Interface 
+\end_layout
+
+\begin_layout Standard
+
+\family sans
+\shape italic
+org.apache.tapestry5.ioc.Configuration<T>
+\family default
+\shape default
+ als Servicecontribution, sondern bietet noch weitere komplexere Übergabeformen.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset Quotes eld
+\end_inset
+
+Ordered Configuration
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Es gibt Anwendungsfälle in denen es nicht ausreicht, einem Service eine
+ einfache Liste von Objekten zu übergeben.
+ Bei der Verwendung der übergebenen Liste wird diese üblicherweise sequenziell
+ abgehandelt.
+ Man kann sich nun leicht Fälle vorstellen, bei denen die Reihenfolge der
+ Objekte in der Liste nicht beliebig sein kann.
+ Wenn zum Beispiel Abhängigkeiten zwischen den einzelnen Diensten aus der
+ Liste bestehen, so hat die Reihenfolge ihrer Abarbeitung Auswirkungen auf
+ das Ergebnis.
+ Für den Fall, dass man also die Reihenfolge der Dienste in der Liste beeinfluss
+en möchte bzw.
+ muss, bietet Tapestry die Übergabeform einer geordneten Liste über das
+ Interface
+\end_layout
+
+\begin_layout Standard
+
+\family sans
+\shape italic
+org.apache.tapestry5.ioc.OrderedConfiguration<T> 
+\family default
+\shape default
+an.
+ Wie eine derartige 
+\begin_inset Quotes eld
+\end_inset
+
+Ordered Contribution
+\begin_inset Quotes eld
+\end_inset
+
+ als Konfiguration durchgeführt wird zeigt folgendes Codebeispiel.
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Tapestry: Sortierte Listenübergabe
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:tapestry-ordered-contribution"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	public static void contributeMyServiceInterface(OrderedConfiguration<MyServiceD
+ependencyElement> configuration)
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		configuration.add("last", new LastService(), "after:*");
+\end_layout
+
+\begin_layout Plain Layout
+
+		configuration.add("second", new SecondService(), "after:first");
+\end_layout
+
+\begin_layout Plain Layout
+
+		configuration.add("first", new FirstService(), "before:*");
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\end_layout
+
+\begin_layout Plain Layout
+
+		// ...
+ more Elements to be added to the ordered list
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:tapestry-ordered-contribution"
+
+\end_inset
+
+ wird eine Servicekonfiguration durchgeführt, in der festgelegt ist, dass
+ einem Service, der das Interface 
+\family sans
+\shape italic
+MyServiceInterface
+\family default
+\shape default
+ implementiert, eine sortierte Liste von Services übergeben werden soll.
+ Die Sortierung der Liste kann dabei durch die Schlüsselwörter 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+before
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ und 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+after
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ in Zusammenhang mit dem Wildcardzeichen 
+\family sans
+
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+
+\family default
+ oder dem direkten Bezug auf ein anderes Element der Liste beschrieben werden.
+ Um den direkten Bezug auf andere Elemente zu ermöglichen, müssen den einzelnen
+ Elementen eindeutige Namen zugeordnet werden.
+ Die Sortierung der Liste ist im Beispiel so eingestellt, dass der Service
+ 
+\family sans
+\shape italic
+FirstService
+\family default
+\shape default
+ an erster Stelle, vor allen anderen kommt, gefolgt von dem Service 
+\family sans
+\shape italic
+SecondService
+\family default
+\shape default
+ und dem Service 
+\family sans
+\shape italic
+LastService
+\family default
+\shape default
+, der das Ende der Liste bildet.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset Quotes eld
+\end_inset
+
+Mapped Configuration
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Mapped-Configuration"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Es lassen sich aber auch Anwendungsfälle finden, in denen einem Service
+ die Datenstruktur eine Liste, sei sie geordnet oder ungeordnet, als Übergabefor
+m für benötigte andere Services nicht ausreicht, um die ihm gestellten Aufgaben
+ zu bewältigen.
+ In manchen Fällen ist es notwendig Services anhand von Schlüsselelementen
+ zu identifizieren.
+ Für dieses Mapping kann eine Listenstruktur nicht mehr verwendet werden.
+ Sehr wohl aber lässt sich eine derartige Anforderung in Java durch den
+ Objekttyp einer 
+\family sans
+\shape italic
+Map
+\family default
+\shape default
+ realisieren.
+ Damit es nun auch möglich ist Services, mit Schlüsseln in Beziehung zu
+ bringen, und dies auch als Konfiguration im IOC Container abzulegen, bietet
+ Tapestry das Interface 
+\family sans
+\shape italic
+org.apache.tapestry5.ioc.MappedConfiguration<K,V>
+\family default
+\shape default
+ an.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Tapestry: Serviceübergabe mit Schlüsselmapping
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:tapestry-mapped-ordered-contribution"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	public static void contributeMyServiceInterface(MappedConfiguration<String,
+ MyServiceDependency> configuration)
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		configuration.add("keyFoo", new FooService());
+\end_layout
+
+\begin_layout Plain Layout
+
+		configuration.add("keyFooFoo", new FooFooService());
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		// ...
+ more key/value pairs to be added to the map
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:tapestry-mapped-ordered-contribution"
+
+\end_inset
+
+ wird die Verwendung einer 
+\begin_inset Quotes eld
+\end_inset
+
+Mapped Contribution
+\begin_inset Quotes erd
+\end_inset
+
+ gezeigt.
+ Dabei wird eine Servicekonfiguration angelegt, die einem Service, der das
+ Interface 
+\family sans
+\shape italic
+MyServiceInterface
+\family default
+\shape default
+ implementiert, eine Map übergibt.
+ Über die Schlüssel 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+keyFoo
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ und 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+keyFooFoo
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ kann der Service dann Zugriff auf die zwei darunter hinterlegten Objekte
+ erhalten.
+\end_layout
+
+\begin_layout Section
+
+\noun on
+SpringContributions
+\end_layout
+
+\begin_layout Standard
+Das Spring Framework ist selbst aus Komponenten aufgebaut.
+ Aus diesem Grund bietet das Framework auch eine einfache Möglichkeit neue
+ Komponenten in das Framework zu integrieren.
+ Um die aus dem Tapestry Framework bekannte Contribution Funktionalitäten
+ auch in Spring einführen zu können, haben wir uns genau dieser Möglichkeit
+ bedient und die eigene Spring Komponente 
+\noun on
+SpringContributions
+\noun default
+ entwickelt.
+\end_layout
+
+\begin_layout Standard
+Die Ausgangspunkte in der Entwicklung der neuen Komponente sind der eigener
+ Namensraum und das zugehöriges XML-Schema.
+ Die für Spring in der Version 3.0 entwickelten 
+\noun on
+SpringContributions
+\noun default
+ verwenden das XML-Schema 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\size footnotesize
+http://www.springframework.org/schema/contributions/spring-contributions-3.0.xsd
+\family default
+\size default
+
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+mit dem XML-Namespace 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\size footnotesize
+http://www.springframework.org/schema/contributions
+\family default
+\size default
+
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+//TODO Erklärung der Verwendung des Tapestry Begriffs Contribution als Contribut
+ion für Contribution Objekt in SpringContributions
+\end_layout
+
+\begin_layout Standard
+Um die Grundlage für den Spring eigenen 
+\begin_inset Quotes eld
+\end_inset
+
+Contribution
+\begin_inset Quotes erd
+\end_inset
+
+ Mechanismus zu legen werden im XML-Schema einige neue Konfigurationselemente
+ definiert.
+ Der wichtigste Unterschied zwischen den 
+\noun on
+SpringContributions
+\noun default
+ und der Tapestry Vorlage liegt darin, dass wir in der Spring Konfiguration
+ jeder Contribution einen Namen geben und somit jede konkrete Übergabeform
+ als eigenes Objekt behandeln.
+ Ist ein Contribution Objekt einmal definiert, so kann sich jedes Bean,
+ dass sich nun dieser Contribution anschließen oder sich ihrer bedienen
+ will, über deren Namen das tatsächliche Objekt referenzieren.
+ Der Name eines Contribution Objekts kann also in einer Beandefinition referenzi
+ert werden (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:SpringContributions:Contribution-Reference"
+
+\end_inset
+
+).
+ Das bedeutet das jedes Bean, das ein Contribution Objekt entgegen nimmt,
+ dies auch in seiner XML-Definition bekannt geben muss.
+\end_layout
+
+\begin_layout Standard
+Außerdem unterscheiden die 
+\noun on
+SpringContributions 
+\noun default
+nicht mehr extra zwischen unsortierten und sortierten Listen.
+ Es besteht nur noch die Unterscheidung zwischen Listenübergabe und Gemappter
+ Übergabeform.
+ Jede Konfigurationsmöglichkeit die für die 
+\noun on
+SpringContributions 
+\noun default
+angeboten wird
+\noun on
+,
+\noun default
+ ist daher auch immer in doppelter Form vorhanden.
+ Im Folgenden werden die einzelnen Konfigurationsmöglichkeiten anhand der
+ zu verwendenden XML-Elemente und XML-Attribute im Detail beschrieben.
+\end_layout
+
+\begin_layout Paragraph
+XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+contribution-ref
+\begin_inset Quotes erd
+\end_inset
+
+ und 
+\begin_inset Quotes eld
+\end_inset
+
+mapped-contribution-ref
+\begin_inset Quotes erd
+\end_inset
+
+:
+\begin_inset CommandInset label
+LatexCommand label
+name "par:SpringContribution:XML-Element-contribution-ref"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Über das Element 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+contribution-ref
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ wird ein Contribution Listen Objekt referenziert.
+ Möchte man eine 
+\begin_inset Quotes eld
+\end_inset
+
+Mapped Configuration
+\begin_inset Quotes erd
+\end_inset
+
+ referenzieren, so muss man das XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+mapped-contribution-ref
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ verwenden.
+ Für beide Formen gilt, dass in dem XML-Attribut 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+name
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ der Name des zu verwendenden Contribution Objekts angegeben wird.
+ Beide XML-Elemente können nun an allen möglichen Stellen, also z.B.
+ innerhalb einer Konstruktor Definition oder auch in einer Setter Definition
+ eines Beans als Referenzierung auf das Contribution Objekt verwendet werden
+ (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:SpringContributions:Contribution-Reference"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+SpringContributions: 
+\noun default
+Verwendung von Contribution Referenzen für Konstruktor- und Setter-Injection
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:SpringContributions:Contribution-Reference"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<?xml version="1.0" encoding="UTF-8" ?>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w
+3.org/2001/XMLSchema-instance"	xmlns:ctr="http://www.springframework.org/schema/con
+tributions" xsi:schemaLocation="http://www.springframework.org/schema/beans	
+ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springfr
+amework.org/schema/contributions http://www.springframework.org/schema/contribution
+s/spring-contributions-3.0.xsd">
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<!-- Referenzierung von Contribution Objekten in einer Bean mit Konstruktor-In
+jektion -->
+\end_layout
+
+\begin_layout Plain Layout
+
+		<bean id="constructorClassName" class="MyConstructorInitializedService">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<constructor-arg>
+\end_layout
+
+\begin_layout Plain Layout
+
+				<ctr:contribution-ref name="contributionName" />
+\end_layout
+
+\begin_layout Plain Layout
+
+				<ctr:mapped-contribution-ref name="mappedContributionName" />
+\end_layout
+
+\begin_layout Plain Layout
+
+			</constructor-arg>
+\end_layout
+
+\begin_layout Plain Layout
+
+			<!-- weitere Metadaten zum jeweiligen Bean -->
+\end_layout
+
+\begin_layout Plain Layout
+
+		</bean>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<!-- Referenzierung von Contribution Objekten in einer Bean mit Setter-Injekti
+on -->
+\end_layout
+
+\begin_layout Plain Layout
+
+		<bean id="setterClassName" class="MySetterInitializedService" >
+\end_layout
+
+\begin_layout Plain Layout
+
+			<property name="listDependency" >
+\end_layout
+
+\begin_layout Plain Layout
+
+				<value>
+\end_layout
+
+\begin_layout Plain Layout
+
+					<ctr:contribution-ref name="contributionName" />
+\end_layout
+
+\begin_layout Plain Layout
+
+				</value>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</property>
+\end_layout
+
+\begin_layout Plain Layout
+
+			<property name="mappedDependency" >
+\end_layout
+
+\begin_layout Plain Layout
+
+				<value>
+\end_layout
+
+\begin_layout Plain Layout
+
+					<ctr:mapped-contribution-ref name="mappedContributionName" />
+\end_layout
+
+\begin_layout Plain Layout
+
+				</value>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</property>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</bean>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	</beans>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xml>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Hinzufügen von Beans zu Contribution Listen
+\end_layout
+
+\begin_layout Standard
+Da uns in XML sowohl Elemente als auch Attribute zur Verfügung stehen, haben
+ wir die Möglichkeit zum Hinzufügen von Beans zu einer Contribution Liste
+ auf zwei Arten realisiert.
+ //TODO
+\end_layout
+
+\begin_layout Paragraph
+XML-Attribut 
+\begin_inset Quotes eld
+\end_inset
+
+contributeTo
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+Dieses Attribut kann verwendet werden um ein Bean zu einer Contribution
+ Liste hinzuzufügen.
+ Dabei wird der Konfiguration mitgeteilt, dass das eben definierte Bean
+ ein Element der Contribution Liste mit dem im XML-Attribut 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+contributeTo
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ definierten Namen werden soll (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:SpringContributions:contributeTo"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+SpringContributions: 
+\noun default
+Einfache Elementdefinition für normale Listenkonfiguration über XML-Attribut
+ 
+\begin_inset Quotes eld
+\end_inset
+
+contributeTo
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:SpringContributions:contributeTo"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<?xml version="1.0" encoding="UTF-8" ?>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w
+3.org/2001/XMLSchema-instance"	xmlns:ctr="http://www.springframework.org/schema/con
+tributions" xsi:schemaLocation="http://www.springframework.org/schema/beans	
+ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springfr
+amework.org/schema/contributions http://www.springframework.org/schema/contribution
+s/spring-contributions-3.0.xsd">
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<bean id="className" class="classToBeContributed"
+\end_layout
+
+\begin_layout Plain Layout
+
+			contributeTo="contributionName">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<!-- weitere Metadaten -->
+\end_layout
+
+\begin_layout Plain Layout
+
+		</bean>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	</beans>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xml>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+\begin_inset VSpace bigskip
+\end_inset
+
+XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+contribute
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+Mit dem XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+contribute
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ erreicht man das selbe Ergebnis wie mit dem XML-Attribut 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+contributeTo
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ und kann also ein Bean zu einer Contribution Liste hinzufügen (siehe Listing
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:SpringContributions:contribute"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+SpringContributions: 
+\noun default
+Einfache Elementdefinition für normale Listenkonfiguration über XML-Element
+ 
+\begin_inset Quotes eld
+\end_inset
+
+contribute
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:SpringContributions:contribute"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<?xml version="1.0" encoding="UTF-8" ?>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w
+3.org/2001/XMLSchema-instance"	xmlns:ctr="http://www.springframework.org/schema/con
+tributions" xsi:schemaLocation="http://www.springframework.org/schema/beans	
+ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springfr
+amework.org/schema/contributions http://www.springframework.org/schema/contribution
+s/spring-contributions-3.0.xsd">
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<bean id="className" class="classToBeContributed">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<contribute to="contributionName" />
+\end_layout
+
+\begin_layout Plain Layout
+
+			<!-- weitere Metadaten -->
+\end_layout
+
+\begin_layout Plain Layout
+
+		</bean>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	</beans>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xml>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+contribution
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+Über das XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+contribution
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ ist es möglich, gleich mehrere Beans zu einer Contribution Liste hinzu
+ zu fügen.
+ Die Angabe des Namens des Contributionobjekts, zu dem die Elemente hinzugefügt
+ werden sollen, wird auch hier über das Attribut 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+to
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ bewerkstelligt.
+ Im Gegensatz zum Tapestry Contribution Mechanismus unterscheiden die 
+\noun on
+SpringContributions 
+\noun default
+nicht zwischen der sortierten und der unsortierten Listenübergabeform.
+ Jede Konfiguration einer Contribution Liste kann über das XML-Attribut
+ 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+constraints
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ optional mit Sortierungsinformationen versehen werden.
+ Lässt man die Sortierungsinformationen weg, so bestimmt die Reihenfolge
+ des Vorkommens im Konfigurationstext die Ordnung der Elemente in der Liste.
+ Die Syntax für die Sortierung wird, wie innerhalb einer Tapestrykonfiguration,
+ über die Schlüsselwörter 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+before
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ und 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+after
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ in Verbindung mit einem konkreten Elementnamen oder der Stern Wildcard
+ 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+*
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ festgelegt.
+\end_layout
+
+\begin_layout Standard
+Das XML-Attribut 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+ref
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ wird wie auch sonst in der Spring Konfiguration als Verweis auf ein an
+ einer anderen Stelle definiertes Bean verwendet.
+ Das bedeutet, dass zu jedem über das XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+Entry
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ definierte Element der Contribution Liste, eine referenzierbare Beandefinition
+ innerhalb der Konfigurationsfiles vorliegen muss (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:SpringContributions:contribution-Element"
+
+\end_inset
+
+).
+ Die Beandefinition muss aber im Konfigurationsfile nicht wie im Beispiel
+ direkt vor seiner Referenzierung platziert werden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:SpringContributions:contribution-Element"
+
+\end_inset
+
+SpringContributions: 
+\noun default
+Mehrfache Elementdefinition für normale und sortierte Listenkonfiguration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<?xml version="1.0" encoding="UTF-8" ?>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w
+3.org/2001/XMLSchema-instance" xmlns:ctr="http://www.springframework.org/schema/con
+tributions" xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springfr
+amework.org/schema/contributions http://www.springframework.org/schema/contribution
+s/spring-contributions-3.0.xsd">
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<bean name="myContributedService" class="MyContributedService" />
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<ctr:contribution to="contributionName">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<ctr:entry name="myContributedService" ref="myContributedService" constraints
+="after:*" />
+\end_layout
+
+\begin_layout Plain Layout
+
+			<!-- weitere Elemente -->
+\end_layout
+
+\begin_layout Plain Layout
+
+		</ctr:contribution>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	</beans>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xml>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+mapped-contribution
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+Möchte man mehrere Elemente zu einer 
+\begin_inset Quotes eld
+\end_inset
+
+Mapped Configuration
+\begin_inset Quotes erd
+\end_inset
+
+ (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Mapped-Configuration"
+
+\end_inset
+
+) hinzufügen, so muss man sich des XML-Elements 
+\begin_inset Quotes eld
+\end_inset
+
+mapped-contribution
+\begin_inset Quotes erd
+\end_inset
+
+ bedienen.
+ Der innere Komplexe Datentyp dieses Elements entspricht dem einer 
+\family sans
+\shape italic
+java.util.Map
+\family default
+\shape default
+, und benötigt daher für jedes Element auch die Angabe von Schlüssel und
+ zugeordneten Werten über die Attribute 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\shape italic
+key
+\family default
+\shape default
+
+\begin_inset Quotes erd
+\end_inset
+
+ und 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\shape italic
+value
+\family default
+\shape default
+
+\begin_inset Quotes erd
+\end_inset
+
+ bzw.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\shape italic
+key-ref
+\family default
+\shape default
+
+\begin_inset Quotes erd
+\end_inset
+
+ und 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\shape italic
+value-ref
+\family default
+\shape default
+
+\begin_inset Quotes erd
+\end_inset
+
+ (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:SpringContributions:mapped-contribution-Element"
+
+\end_inset
+
+).
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:SpringContributions:mapped-contribution-Element"
+
+\end_inset
+
+SpringContributions: 
+\noun default
+Mehrfache Elementdefinition für 
+\begin_inset Quotes eld
+\end_inset
+
+gemappte
+\begin_inset Quotes erd
+\end_inset
+
+ Konfiguration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<?xml version="1.0" encoding="UTF-8" ?>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w
+3.org/2001/XMLSchema-instance" xmlns:ctr="http://www.springframework.org/schema/con
+tributions" xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springfr
+amework.org/schema/contributions http://www.springframework.org/schema/contribution
+s/spring-contributions-3.0.xsd">
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<bean name="myContributedService" class="MyContributedService" />
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		<ctr:mapped-contribution to="contributionName">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<ctr:entry key="myServiceKey" value-ref="myContributedService" />
+\end_layout
+
+\begin_layout Plain Layout
+
+			<!-- weitere Elemente -->
+\end_layout
+
+\begin_layout Plain Layout
+
+		</ctr:mapped-contribution>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	</beans>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xml>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Funktionsweise
+\end_layout
+
+\begin_layout Standard
+Zur Erweiterung des Spring XML Konfiguration Mechanismus bietet Spring die
+ abstrakte Klasse 
+\family sans
+\shape italic
+NamespaceHandlerSupport 
+\family default
+\shape default
+und die Interfaces
+\family sans
+\shape italic
+ BeanDefinitionParser 
+\family default
+\shape default
+und
+\family sans
+\shape italic
+ BeanDefinitionDecorator
+\family default
+\shape default
+ an.
+\end_layout
+
+\begin_layout Section
+\begin_inset Quotes eld
+\end_inset
+
+Chain Of Command
+\begin_inset Quotes erd
+\end_inset
+
+ Service
+\end_layout
+
+\begin_layout Section
+\begin_inset Quotes eld
+\end_inset
+
+Strategy
+\begin_inset Quotes erd
+\end_inset
+
+ Service
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Gamma:1995"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset Quotes eld
+\end_inset
+
+Pipeline
+\begin_inset Quotes erd
+\end_inset
+
+ Service
+\end_layout
+
+\begin_layout Section
+\begin_inset Quotes eld
+\end_inset
+
+Shadow
+\begin_inset Quotes erd
+\end_inset
+
+ Service
+\end_layout
+
+\begin_layout Chapter
+IOC Frameworks
+\end_layout
+
+\begin_layout Section
+Pico Container
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Pico-Container"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Das Pico Container Framework sieht den IOC Begriff als Zusammenfassung mehrerer
+ konkreter Schritte.
+ Zum einen die Auflösung bzw.
+ Auffindung von Modul/Objekt Abhängigkeiten als Dependency Injection (siehe
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:seperating configuration from use"
+
+\end_inset
+
+ ), des weiteren die Konfiguration der Abhängigkeiten, als auch die Verwaltung
+ des Lebenszyklus der Abhängigkeiten.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "bibtex/literatur"
+options "bibtotoc,plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
