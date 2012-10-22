@@ -4868,7 +4868,12 @@ etValue();
 
 		builder.addPropertyValue("contributionList", contributionList);       
       		parserContext.getRegistry().registerBeanDefinition(beanName, builder.getBea
-nDefinition());         }
+nDefinition());
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
 \end_layout
 
 \begin_layout Plain Layout
@@ -5005,6 +5010,487 @@ name "fig:Contributionliste"
 
 \end_layout
 
+\begin_layout Subsection
+Anwendungsbeispiel
+\end_layout
+
+\begin_layout Standard
+Ein Anwendungsbeispiel des 
+\noun on
+SpringContributions
+\noun default
+ Mechanismus wird in den Listings 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:OrderedContributionTest-Konfiguration"
+
+\end_inset
+
+ und 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:OrderedContributionTest-Test"
+
+\end_inset
+
+ gegeben.
+\end_layout
+
+\begin_layout Standard
+Dabei handelt es sich im ersten Listing um den Inhaltlichen Auszug einer
+ Spring Konfiguration, in der ein 
+\family sans
+\shape italic
+ValueHolder
+\family default
+\shape default
+ Service als Spring Bean sowie eine 
+\family sans
+\shape italic
+OrderedContribution 
+\family default
+\shape default
+mit dem Namen 
+\family sans
+\shape italic
+"value-list"
+\family default
+\shape default
+ definiert werden.
+ Der 
+\family sans
+\shape italic
+ValueHolder
+\family default
+\shape default
+ Service erwartet die Contribution Liste als Konstruktor-Argument.
+ Innerhalb der Contributionliste sind drei Strings ("
+\family sans
+\shape italic
+String 1
+\family default
+\shape default
+", "
+\family sans
+\shape italic
+String 2
+\family default
+\shape default
+", "
+\family sans
+\shape italic
+String 3
+\family default
+\shape default
+") als Elemente definiert.
+ Jedem Element wird durch seine jeweilige 
+\family sans
+\shape italic
+constraints
+\family default
+\shape default
+ Einstellung eine bestimmte Position innerhalb der Liste zugewiesen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:OrderedContributionTest-Konfiguration"
+
+\end_inset
+
+ Spring Bean und Ordered Contribution Test-Konfiguration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<bean class="org.springframework.contributions.ValueHolder">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<constructor-arg>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<ctr:contribution-ref name="value-list" />
+\end_layout
+
+\begin_layout Plain Layout
+
+	</constructor-arg>
+\end_layout
+
+\begin_layout Plain Layout
+
+</bean> 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<ctr:contribution to="value-list">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<ctr:entry name="string3" value="String 3"
+\end_layout
+
+\begin_layout Plain Layout
+
+		constraints="after:string2" />
+\end_layout
+
+\begin_layout Plain Layout
+
+	<ctr:entry name="string1" value="String 1"
+\end_layout
+
+\begin_layout Plain Layout
+
+		constraints="before:*" />
+\end_layout
+
+\begin_layout Plain Layout
+
+	<ctr:entry name="string2" value="String 2"
+\end_layout
+
+\begin_layout Plain Layout
+
+		constraints="after:string1,before:string3" />
+\end_layout
+
+\begin_layout Plain Layout
+
+</ctr:contribution>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Im zweiten Listing findet sich zum Einen die Implementierung des 
+\family sans
+\shape italic
+ValueHolder
+\family default
+\shape default
+ Service.
+ Zum Anderen wird die zuvor definierte Spring Konfiguration in einem JUnit
+ Test (
+\family sans
+\shape italic
+OrderedContributionIntegrationTest
+\family default
+\shape default
+) verwendet.
+\end_layout
+
+\begin_layout Standard
+Innerhalb des Unit Tests wird die Konfiguration über die Spring Annotation
+ 
+\family sans
+\shape italic
+@ContextConfiguration
+\family default
+\shape default
+ als Spring Kontext in den Test mit eingebunden.
+ Der Unit Test überprüft dann die richtige Reihenfolge der einzelnen Strings
+ innerhalb der Contributionliste.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:OrderedContributionTest-Test"
+
+\end_inset
+
+ 
+\family sans
+\shape italic
+ValueHolder
+\family default
+\shape default
+ Service Klasse und Ordered Contribution Anwendung als JUnit Test
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+//Java-Klasse ValueHolder:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class ValueHolder
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	private final List<String> values;
+\end_layout
+
+\begin_layout Plain Layout
+
+	public ValueHolder(final List<String> values)
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		this.values = values;
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	public List<String> getValues()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return values;
+\end_layout
+
+\begin_layout Plain Layout
+
+	} 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+//Java-Klasse OrderedContributionIntegrationTest:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@ContextConfiguration("spring-contributions-ordered.xml") 
+\end_layout
+
+\begin_layout Plain Layout
+
+@RunWith(SpringJUnit4ClassRunner.class)
+\end_layout
+
+\begin_layout Plain Layout
+
+public class OrderedContributionIntegrationTest
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Autowired
+\end_layout
+
+\begin_layout Plain Layout
+
+	private ValueHolder stringHolder;
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Test
+\end_layout
+
+\begin_layout Plain Layout
+
+	public void testStringContribution()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		assertThat(stringHolder.getValues(),
+\end_layout
+
+\begin_layout Plain Layout
+
+			is(Arrays.asList("String 1", "String 2", "String 3")));
+\end_layout
+
+\begin_layout Plain Layout
+
+	} 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 
 \noun on
@@ -5026,7 +5512,7 @@ Im letzten Abschnitt wurde die Adaption des von Tapestry bekannten Contribution
 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 \begin_inset Quotes eld
 \end_inset
 
@@ -5404,7 +5890,7 @@ rsedStringFormatStrategy" />
 //TODO
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 \begin_inset Quotes eld
 \end_inset
 
@@ -5419,7 +5905,7 @@ Chain Of Command
 //TODO
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 \begin_inset Quotes eld
 \end_inset
 
@@ -5434,7 +5920,7 @@ Pipeline
 //TODO
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 \begin_inset Quotes eld
 \end_inset
 
