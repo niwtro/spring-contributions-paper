@@ -76,8 +76,18 @@
 \begin_body
 
 \begin_layout Title
-Objektorientierte, modulare Programmierung durch Dependency Injection mittels
- Contribution Funktionalität.
+\begin_inset Quotes eld
+\end_inset
+
+Contribution Funktionalität
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Objektorientierte, modulare Programmierung mit erweiterter Dependency Injection
 \end_layout
 
 \begin_layout Author
@@ -85,11 +95,64 @@ Ortwin Probst - 0026402
 \end_layout
 
 \begin_layout Abstract
-//TODO
+Diese Arbeit beschäftigt sich mit Dependency Injection als einer Methode
+ zur Unterstützung von modularer Softwareentwicklung.
+ Im Detail werden die Vorteile des erweiterten Dependency Injection Mechanismus
+ des Java-Frameworks Tapestry beleuchtet und als Inspiration für eine praktische
+ Erweiterung des Java-Frameworks Spring herangezogen.
+ Das Resultat ist die konkrete Umsetzung dieser Erweiterung in einem eigenen
+ Spring Modul.
+ Dabei werden parallele zwei unterschiedliche Konfigurationsmechanismen
+ mit äquivalentem Funktionsumfang angeboten, um die Anforderungen innerhalb
+ des Spring Frameworks zur Gänze erfüllen zu können.
+ Beide Konfigurationsmechanismen werden im Detail auf deren Unterschiede
+ in der Implementierung verglichen und in ihrer Anwendung gegenübergestellt.
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Erweitern
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Dedication
-//TODO Widmung
+Widmung
+\end_layout
+
+\begin_layout Dedication
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO Ich widme diese Arbeit allen die es mir ermöglicht haben in meinem
+ Studium bis zu diesem Punkt zu kommen.
+ Meinen Eltern für die Freiheit, die sie mir geschenkt haben.
+ Meinen Betreuer Ao.Univ.Prof.
+ Mag.Dr.
+ Helge Hagenauer von der Universität Salzburg für seine sehr geschätzte
+ Unterstützung und die hilfreiche Kritik.
+ Meinem Betreuer Dipl.
+ Ing.
+ Christian Köberl auf Seiten der Porsche Informatik, für die Hilfe bei der
+ Themenfindung, die Fachliche Unterstützung und die Entwicklung der Codebasis.
+ Und meinem Studienkollegen Stefan Esterer für die Austauschmöglichkeit
+ und die regelmäßige Portion Motivation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -112,7 +175,7 @@ Motivation
 \begin_layout Standard
 Meine Diplomarbeit fällt thematisch in den Bereich Modulare Softwareentwicklung
  für Java Enterprise Anwendungen.
- Im Detail stehen Konfigurationsmöglichkeiten für, über Module verteilte
+ Im Detail stehen Konfigurationsmöglichkeiten für über Module verteilte
  Services zur Diskussion (distributed configuration).
  Dabei beschäftige ich mich im Speziellen mit der sogenannten 
 \begin_inset Quotes eld
@@ -160,24 +223,41 @@ tierten Programmiersprache betrachtet.
 \end_layout
 
 \begin_layout Section*
+Theorieteil
+\end_layout
+
+\begin_layout Standard
+Der theoretische Teil der Arbeit soll sich, ausgehend von einer Betrachtung
+ zu modularem Softwaredesign im Bereich von Java Enterprise Anwendungen,
+ genauer mit den zur Verfügung stehenden Techniken für Modulare Entwicklung
+ auseinandersetzen.
+ Dabei solle einerseits die klassische IOC Technik der Dependency Injection
+ sowie auch die Möglichkeit der Contributions und deren Nutzen erklärt und
+ gezeigt werden.
+ Im Detail wird dabei auf die Konfiguration der beiden IOC-Frameworks Tapestry
+ und Spring eingegangen werden.
+\end_layout
+
+\begin_layout Section*
 Praxisteil
 \end_layout
 
 \begin_layout Standard
 Mein Ausgangspunkt ist das Interesse der Porsche Informatik, eine bestehende,
- modular entworfene und auf Tapestry basierende Webapplikation, auf das
- in der Firma zum Standard erklärte IOC Framework Spring umzustellen.
- Um einen hohen Grad an Modularität zu erreichen wurde die Webapplikation
+ modular entworfene und auf dem Apache Tapestry Framework basierende Java
+ Webapplikation, auf das in der Firma zum Standard erklärte IOC Framework
+ Spring umzustellen.
+ Um einen hohen Grad an Modularität zu erreichen, wurde die Webapplikation
  ursprünglich auf dem Open Source Framework Tapestry 5 aufgebaut.
  Diese Framework bietet einige Techniken die ein modulares Programmieren
  erleichtern.
 \end_layout
 
 \begin_layout Standard
-Konkret handelt es sich dabei um vier sogenannte Service Builder.
- Dies sind Methoden, die es ermöglichen, die Konfiguration eines Services
- aus verschiedenen, von einander unabhängigen Modulen heraus zu erstellen.
- Dadurch kann die gesamte Anwendung und all ihre Services, nur durch das
+Konkret bietet das Framework Methoden, die es ermöglichen, die Konfiguration
+ eines Services aus verschiedenen, von einander unabhängigen Modulen heraus
+ zu erstellen.
+ Dadurch können die gesamte Anwendung und all ihre Services, nur durch das
  Einhängen eines weiteren Moduls in den Classpath, um neue Funktionalität
  erweitert werden.
  Diese Technik wird in Tapestry 5 als Contribution bezeichnet.
@@ -186,7 +266,9 @@ Konkret handelt es sich dabei um vier sogenannte Service Builder.
 \begin_layout Standard
 Als anschauliches Beispiel kann man sich den Menü-Service einer Webanwendung
  vorstellen.
- Dieser Service wird in Tapestry 5 aus der zusammengeführten Servicekonfiguratio
+ Das Service dient dazu, automatisch ein Auswahlmenü über alle zur Verfügung
+ stehenden Funktionen im Benutzerinterface bereit zu stellen.
+ Dieses Service wird in Tapestry 5 aus der zusammengeführten Servicekonfiguratio
 n aller Module aufgebaut.
  D.h.
  jedes Modul 
@@ -204,42 +286,44 @@ contributet
 
 \begin_layout Standard
 Das Ziel ist es nun zuerst die in Tapestry 5 vorhandene Technik des Contribution
-s Mechanismus für das Spring Framewor zu adaptieren und danach auf dieser
- Basis die Tapestry Servicebuilder (StrategyBuilder, Chain Of Command, Pipeline
- und Shadow Services) ebenfalls für Spring bereit zu stellen.
- Das Ergebnis dieser Arbeit soll 
+s Mechanismus für das Spring Framework zu adaptieren und danach auf dieser
+ Basis zusätzlich das Tapestry 
+\begin_inset Quotes eld
+\end_inset
+
+StrategyBuilder
+\begin_inset Quotes erd
+\end_inset
+
+-Service ebenfalls für Spring bereit zu stellen.
+ Das Ergebnis dieser Arbeit soll ein eigenes Java Modul mit dem Namen
 \noun on
-SpringContributions,
+ SpringContributions
 \noun default
- ein eigenes Java Modul, sein, mit dem die bestehende Webapplikation so
- umgestellt werden kann, dass anstelle des Tapestry 5 Contribution Systems
- das neue 
+ sein, mit dem die bestehende Webapplikation so umgestellt werden kann,
+ dass anstelle des Tapestry 5 Contribution Systems das neue 
 \noun on
 SpringContributions
 \noun default
  System verwendet wird.
 \end_layout
 
-\begin_layout Section*
-Theorieteil
-\end_layout
-
 \begin_layout Standard
-Der theoretische Teil der Arbeit soll sich, ausgehend von einer Betrachtung
- zu modularem Softwaredesign im Bereich von Java Enterprise Anwendungen,
- genauer mit den zur Verfügung stehenden Techniken für Modulare Entwicklung
- auseinandersetzen.
- Dabei solle einerseits die klassische IOC Technik der Dependency Injection
- sowie auch die Möglichkeit der Contributions und deren Nutzen erklärt und
- gezeigt werden.
- Hier möchte ich die verschiedensten Frameworks (Tapestry 5, Spring 3.0,
- JEE 6 CDI, Guice) miteinander vergleichen und durch den Praxisteil eine
- konkrete Möglichkeit aufzeigen, wie eben Spring um ein Contribution System
- ergänzt werden kann.
+Da es in Spring zwei unterschiedliche Wege der Konfiguration gibt, ist es
+ auch Ziel des Praxisteils je eine Lösung für diese beiden unterschiedlichen
+ Wege umzusetzen.
+ Es wird ein Augenmerk darauf gelegt werden, im Bezug auf Funktionsumfang
+ und die Art der Anwendung, auf Gleichheit bzw.
+ Ähnlichkeit der beiden Lösungen zu achten.
+ Ebenso soll die Ähnlichkeit zum Vorbildsystem berücksichtigt werden und
+ besonders auf Unterschiede die sich aus der Implementierung oder konzeptionelle
+n Abweichungen von Tapestry zu Spring ergeben eingegangen werden.
+ Probleme die sich auf dem Weg zu diesen Zielen ergeben sollen aufgezeigt
+ und erläutert werden.
 \end_layout
 
 \begin_layout Chapter
-Modulare Programmierung (TODO gut so?)
+Modulare Programmierung
 \end_layout
 
 \begin_layout Standard
@@ -329,9 +413,34 @@ Definition
 \end_layout
 
 \begin_layout Standard
-(DODO Quelle?) In dieser Arbeit wird der Begriff Service bzw.
- Dienst als Zusammenfassung für, über Schnittstellen definierte und zur
- Verfügung gestellte Funktionalität verwendet.
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO gibt es hier eine Quelle?
+\end_layout
+
+\end_inset
+
+In dieser Arbeit wird der Begriff 
+\begin_inset Quotes eld
+\end_inset
+
+Service
+\begin_inset Quotes erd
+\end_inset
+
+ bzw.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Dienst
+\begin_inset Quotes erd
+\end_inset
+
+ als Zusammenfassung für, über Schnittstellen definierte und zur Verfügung
+ gestellte Funktionalität verwendet.
  In der Informatik wird der Begriff häufig auch im Zusammenhang mit Verteilten
  Systemen gebraucht und assoziiert eventuell einen verteilten Kontext.
  Deshalb möchte ich hier explizit darauf hinweisen, dass im Bereich dieser
@@ -392,8 +501,8 @@ Verringerung der Entwicklungszeit, da Entwicklergruppen ohne viel Kommunikation
 \end_layout
 
 \begin_layout Enumerate
-Steigerung der Flexibilität, durch die Möglichkeit drastische Änderungen
- in einem Modul vor zu nehmen, ohne dabei andere Module anpassen zu müssen.
+Steigerung der Flexibilität, durch die Möglichkeit Änderungen in einem Modul
+ vor zu nehmen, ohne dabei andere Module anpassen zu müssen.
  
 \end_layout
 
@@ -402,8 +511,9 @@ Erleichterung der Verständlichkeit des Gesamtsystems, und somit auch die
  Unterstützung eines besseren Designs.
 \end_layout
 
-\begin_layout Standard
-TODO mehr Inhalt zu den Vorteilen (testability: mocking)
+\begin_layout Enumerate
+Erleichterung im Testen durch die Trennung von Interface, Implementierung
+ und Konfiguration.
 \end_layout
 
 \begin_layout Subsection
@@ -420,8 +530,8 @@ Betrachtet man die modulare Softwareentwicklung, so muss man dabei zwei
 
 \begin_layout Standard
 Die Entwicklung eines Moduls ist die Aufgabe eines Modulentwicklers.
- Dieser ist zuständig für die Implementierung und die Definition der Schnittstel
-len.
+ Dieser ist zuständig für die interne Implementierung und die Definition
+ der Modulschnittstellen.
 \end_layout
 
 \begin_layout Standard
@@ -477,7 +587,18 @@ g untereinander aufbauen.
  So ist es auch für eine Anwendungsentwickler, der keinen Einfluss auf die
  Implementierung einzelner Komponenten hat, möglich mehrere Softwarekomponente
  zu einer Anwendung zu kombinieren.
- (TODO Rückverweis hierher wenn Details zur testability und Unittests kommen)
+ 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Rückverweis hierher wenn Details zur Testability und Unittests geschrieben
+ sind
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection*
@@ -652,8 +773,17 @@ reference "sub:Bereitstellung-und-Konfiguration"
 \end_layout
 
 \begin_layout Standard
-TODO Alternativen zu IOC Container Frameworks (siehe ev 1997-Johnson-Frameworks.p
-df)
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Ergänzung um Alternativen zu IOC Container Frameworks (siehe ev 1997-Johnso
+n-Frameworks.pdf)
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -827,7 +957,14 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Meilensteine des IOC Pattern
+Meilensteine des IOC Pattern 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Meilensteine-des-IOC"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1036,9 +1173,18 @@ Konstruktor-Injection
 Bei dieser Form von Injektion werden alle nötigen Plugins über den Konstruktor
  des Consumers injiziert.
  Alle Plugins werden hier also schon bei der Erstellung des Consumers benötigt.
- Daraus ergeben sich in der Praxis oftmals Probleme (TODO Verweis auf konkrete
- Problembeschreibung im Praxiskapitel z.B.
- Zyklus), für deren Lösung moderne IOC Frameworks verschiedene Wege (z.B.
+ Daraus ergeben sich in der Praxis oftmals Probleme
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Verweis auf konkrete Problembeschreibung im Praxiskapitel z.B.
+ Zyklus
+\end_layout
+
+\end_inset
+
+, für deren Lösung moderne IOC Frameworks verschiedene Wege (z.B.
  Lazy Loading, Proxying) anbieten.
  Für den Assembler ist es hier wichtig einen bestimmten Konstruktor für
  den Injizierungsvorgang zur Verfügung zu haben.
@@ -1217,14 +1363,85 @@ en, man benötigt zudem eine Plugin Konfiguration, wenn man den Code in einem
 \end_layout
 
 \begin_layout Section
-Modularität mit Spring
+IOC-Frameworks für modulares Entwickeln
 \end_layout
 
 \begin_layout Standard
-In den letzten 10 Jahren sind im Bereich der Java Entwicklung einige IOC
- Container Frameworks entstanden.
- Der wahrscheinlich bekannteste Vertreter aus dieser Gruppe ist unter dem
- Namen Spring Framework bekannt.
+Die im letzten Abschnitt beschriebenen Varianten des 
+\begin_inset Quotes eld
+\end_inset
+
+Inversion of Control
+\begin_inset Quotes erd
+\end_inset
+
+ Pattern sind heute Kernstücke unterschiedlicher IOC-Frameworks.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Matrix von Frameworks und IOC
+\end_layout
+
+\end_inset
+
+ Durch die Eigenschaft der Entkopplungsmöglichkeit die diese Frameworks
+ bieten, können sie sehr hilfreich als Basis für eine modulare Softwareentwicklu
+ng eingesetzt werden.
+ In der Praxis setzt mittlerweile ein Großteil der Namhaften Softwareentwickler
+ IOC-Frameworks zur leichteren Modularisierung ihrer Software ein.
+ Mit dem selbst entwickelten IOC-Framework Google Guice setzt z.B.
+ auch der Suchmaschinen Anbieter ganz stark auf IOC.
+ Neben Guice gibt es weiter IOC-Frameworks wie PicoContainer, Silk DI, Apaches
+ Tapestry oder Oracles CDI.
+ Manche dieser IOC-Frameworks sind sehr spezialisiert, wie z.B.
+ das Tapestry Framework rein auf die Entwicklung von Webanwendungen ausgerichtet
+ ist.
+\end_layout
+
+\begin_layout Standard
+Der wahrscheinlich bekannteste Vertreter aus der Gruppe der IOC-Frameworks
+ ist unter dem Namen 
+\begin_inset Quotes eld
+\end_inset
+
+Spring
+\begin_inset Quotes erd
+\end_inset
+
+ bekannt.
+ Mit 
+\begin_inset Quotes eld
+\end_inset
+
+Spring
+\begin_inset Quotes erd
+\end_inset
+
+ ist die Zusammenfassung einer Vielzahl von Modulen gemein deren Einsatzbereich
+ sehr breit gestreut ist.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Matrix von Spring Modulen
+\end_layout
+
+\end_inset
+
+Bei aller Vielfalt der durch Spring zur Verfügung gestellten Funktionalität,
+ bleibt aber der IOC-Container mit seiner Dependency Injection Funktionalität
+ das Herzstück.
+ Dieses Herzstück ermöglicht zum einen den eigenen modularen Aufbau des
+ Spring Frameworks und kann auch für die Entwicklung von eigenständiger
+ modularer Java-Software eingesetzt werden.
 \end_layout
 
 \begin_layout Chapter
@@ -1248,23 +1465,16 @@ reference "sub:seperating configuration from use"
 
 \begin_layout Section
 Spring
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Spring-Konfiguration"
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
-Spring ist ein mittlerweile sehr weit verbreitetes und äußerst umfangreiches
+Spring ist ein mittlerweile sehr weit verbreitetes, und äußerst umfangreiches
  Java Framework.
  Ungeachtet der zahlreichen Erweiterungen die das Framework seit seinem
  ersten Release erfahren hat , ist der Kern des Spring Frameworks immer
- noch dessen IOC Container.
- Die zentrale Rolle des IOC Containers führte auch dazu, dass im laufe der
- Framework Entwicklung mehrere verschiedene Arten zur IOC Konfiguration
+ noch dessen IOC-Container.
+ Die zentrale Rolle des IOC-Containers führte auch dazu, dass im laufe der
+ Framework Entwicklung mehrere verschiedene Arten zur IOC-Konfiguration
  entstanden sind und aus Gründen der Flexibilität parallel angeboten werden.
  Der gesamten folgende Text bezieht sich immer auf Spring in der Releasversion
  3.0.
@@ -1278,7 +1488,7 @@ Das Java Interface
 org.springframework.beans.factory.BeanFactory
 \family default
 \shape default
- repräsentiert den Spring IOC Container.
+ repräsentiert den Spring IOC-Container.
  Über dieses Interface werden alle notwendigen Aktionen abgedeckt.
  Eine FactoryBean Implementierung kann also zum Registrieren von Objekten
  (Plugins), zum Instanziieren von registrierten Objekten sowie zur Aufbewahrung
@@ -1345,8 +1555,9 @@ Bean
 
 .
  Innerhalb eine Spring Anwendung existieren sowohl Beans als auch ganz normale
- Klassen nebeneinander.
- Beans sind ebenso nur ganz normale Java Klassen.
+ Java-Klassen nebeneinander.
+ Beans sind ebenso ganz normale Java-Klassen, nur eben mit dem Zusatz, dass
+ sie durch den IOC-Container verwaltet werden.
  Um deren Verwaltung überhaupt durchführen zu können, benötigt der IOC Container
  eine Konfiguration für die Menge der Beans.
  Diese Konfiguration wird als 
@@ -1363,7 +1574,15 @@ Configuration Metadata
  Spring bietet verschiedenste Implementierungen des FactoryBean Interfaces
  an.
  Dabei besteht unter anderem die Möglichkeit die Configuration Metadata
- direkt über Javacode, oder über Annotationen, oder über XML Files, die
+ direkt über Javacode, über Annotationen mit 
+\begin_inset Quotes eld
+\end_inset
+
+Component scanning
+\begin_inset Quotes erd
+\end_inset
+
+, über Java-Konfigurationsklassen, oder über XML-Konfigurationsfiles die
  aus der historischen Entwicklung heraus in Spring als Standardkonfigurationsmet
 hode gelten, festzulegen.
  Abbildung 
@@ -1378,17 +1597,59 @@ reference "fig:Spring-IOC-Konfiguration"
 
 \begin_layout Subsection
 Konfiguration
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Spring-Konfiguration"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Dieser Abschnitt gibt eine kurze Einführung in die XML Variante der Spring
- Konfiguration, damit die später folgenden Praxisbeispiele (TODO Verweis)
- auch verständlich gelesen werden können.
+Dieser Abschnitt gibt eine kurze Einführung in die beiden Möglichkeiten
+ der Konfiguration (XML-Konfiguration und Java-Konfiguration)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Die beiden Konfigurationsmethoden werden in der gesamten Arbeit abwechselnd
+ behandelt.
+ Um in Überschriften anschaulich zu kennzeichnen welche Methode gerade gemeint
+ ist, wird der Überschrift entweder (XML) bzw (Java) vorangestellt.
+\end_layout
+
+\end_inset
+
+, die in Spring zu Verfügung stehen.
+ Die beiden Listings (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Spring-Bean-Definition-in-XML"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:Spring-Bean-Definition-in-Java"
+
+\end_inset
+
+) zeigen die einfache Definition eines Service (MyServiceImpl) als Bean.
+ In beiden Varianten wird das selbe Bean konfiguriert.
+ Um die jeweilige Konfiguration zur Anwendung zu bringen, muss sie nur dem
+ Spring IOC-Container übergeben werden.
+\end_layout
+
+\begin_layout Subsubsection*
+XML-Variante der Spring Konfiguration
 \end_layout
 
 \begin_layout Standard
-Ein Spring XML Konfigurationsfile beinhaltet immer eine oder mehrere Bean
- Definitionen.
+Ein Spring XML-Konfiguration besteht aus mindestens einer XML-Datei.
+ Innerhalb dieser XML-Datei können nur beliebig viele Bean Definitionen
+ konfiguriert werden.
  Diese sind durch den XML-Tag 
 \family sans
 \series bold
@@ -1438,7 +1699,14 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Spring Bean-Definition
+Spring Bean-Definition in XML-Datei
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Spring-Bean-Definition-in-XML"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1461,9 +1729,27 @@ Spring Bean-Definition
 
 \begin_layout Plain Layout
 
-	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w
-3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/s
-chema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<beans
+\end_layout
+
+\begin_layout Plain Layout
+
+			xmlns="http://www.springframework.org/schema/beans" 
+\end_layout
+
+\begin_layout Plain Layout
+
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+\end_layout
+
+\begin_layout Plain Layout
+
+			xsi:schemaLocation="http://www.springframework.org/schema/beans
+\end_layout
+
+\begin_layout Plain Layout
+
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 \end_layout
 
 \begin_layout Plain Layout
@@ -1472,7 +1758,7 @@ chema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 \begin_layout Plain Layout
 
-		<bean id="MyBeanId" class="MyClass">
+		<bean id="MyBeanId" class="MyServiceImpl">
 \end_layout
 
 \begin_layout Plain Layout
@@ -1513,14 +1799,209 @@ chema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 \begin_inset VSpace bigskip
 \end_inset
 
-Im IOC Container werden diese Informationen gesammelt und zu jedem Bean
- als 
+
+\end_layout
+
+\begin_layout Subsubsection*
+Java-Variante der Spring Konfiguration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Java-Variante-der-Spring-Konfig"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Ergänzung um Beschreibung zu Componentscanning & @Autowired Beschreibung
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Eine Spring Java-Konfiguration besteht aus mindestens einer Java-Klasse,
+ die, mit der Annotation 
 \family sans
-\shape italic
-BeanDefinition
+\series bold
+@Configuration 
 \family default
-\shape default
- abgelegt.
+\series default
+über dem Klassenenamen, als Spring-Konfiguration markiert ist.
+ Um nun in dieser Java-Klasse ein Bean zu definieren wird eine mit der Annotatio
+n 
+\family sans
+\series bold
+@Bean()
+\family default
+\series default
+ gekennzeichnete Methode benötigt, die eine Instanz der gewünschten Bean-Klasse
+ zurück gibt.
+ Der Name des Bean kann innerhalb der 
+\family sans
+\series bold
+@Bean()
+\family default
+\series default
+ Annotation über den Parameter 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\series bold
+name
+\family default
+\series default
+
+\begin_inset Quotes erd
+\end_inset
+
+ angegeben werden.
+ Wird der name nicht explizit definiert, so wird der Methodenname als Name
+ für das Bean herangezogen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Spring Bean-Definition in Java-Klasse
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:Spring-Bean-Definition-in-Java"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.context.annotation.Configuration;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Configuration
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean()
+\end_layout
+
+\begin_layout Plain Layout
+
+	public static MyServiceInterface myBeanId()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new MyServiceImpl();
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Im folgenden Kapitel wird das Tapestry-Framework beschrieben werden.
+ Dieses diente als Inpiration und Vorbild für die 
+\noun on
+SpringContributions.
+
+\noun default
+ Dabei kann die gerade beschriebene Spring Java-Konfiguration, durch den
+ Umstand, dass diese ebenfalls in Java-Klassen durchgeführt wird, wohl etwas
+ einfacher mit der Tapestry Variante verglichen werden.
+ Das Selbe gilt auch für alle späteren Abschnitte.
 \end_layout
 
 \begin_layout Section
@@ -2043,7 +2524,8 @@ contribute
 \family default
 \shape default
  Methode.
- Laut Namenskonvention beginnt diese Methode mit der Bezeichnung 
+ Laut Namenskonvention beginnt diese Konfigurationsmethode mit der Bezeichnung
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2057,8 +2539,8 @@ contribute
 \begin_inset Quotes erd
 \end_inset
 
- gefolgt von dem Namen des Services, für den die Konfiguration gedacht ist
- (siehe Listing 
+, gefolgt von dem Namen des Services, für den die Konfiguration, und somit
+ die Liste gedacht ist (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "tapestry-contribute"
@@ -2066,11 +2548,13 @@ reference "tapestry-contribute"
 \end_inset
 
 ).
+ Dadurch entsteht eine eindeutige Zuordnung zwischen der Liste und dem Service
+ das sie konsumiert.
 \end_layout
 
 \begin_layout Standard
 Ein großer Vorteil, den diese Art der Servicekonfiguration durch die Indirektion
- über den IOC Container mit sich bringt, ist die Möglichkeit der Liste,
+ über den IOC Container mit sich bringt, ist die Möglichkeit, der Liste,
  derer sich der Service bedienen soll, modulübergreifend weitere Implementierung
 en hinzuzufügen.
 \end_layout
@@ -2499,7 +2983,7 @@ LastService
 \begin_inset Quotes eld
 \end_inset
 
-Mapped Configuration
+Mapped-Configuration
 \begin_inset Quotes erd
 \end_inset
 
@@ -2514,9 +2998,9 @@ name "sub:Mapped-Configuration"
 \end_layout
 
 \begin_layout Standard
-Es lassen sich aber auch Anwendungsfälle finden, in denen einem Service
- die Datenstruktur eine Liste, sei sie geordnet oder ungeordnet, als Übergabefor
-m für benötigte andere Services nicht ausreicht, um die ihm gestellten Aufgaben
+Es lassen sich aber auch Anwendungsfälle finden, in denen die Datenstruktur
+ einer Liste, sei sie geordnet oder ungeordnet, als Übergabeform für ein
+ zu konfigurierendes Service nicht ausreicht, um die ihm gestellten Aufgaben
  zu bewältigen.
  In manchen Fällen ist es notwendig Services anhand von Schlüsselelementen
  zu identifizieren.
@@ -2714,19 +3198,230 @@ keyFooFoo
 \end_layout
 
 \begin_layout Section
+Bean-Listen und Bean-Maps in Spring
+\end_layout
+
+\begin_layout Standard
+In Spring gibt es von Haus aus die Möglichkeit unterschiedliche Beans vom
+ selben Interfacetype in Listen oder in Maps zusammenzufassen und via Dependency
+ Injection an andere Beans weiterzugeben.
+ Dieses Service des IOC-Containers ist in seiner Form etwas wie eine leichtgewic
+htige Minimalform des Tapestry Contributionservices.
+ Spring stellt diese Funktionalität automatisch zur Verfügung und sieht
+ dafür keine eigenständige Konfigurationssyntax vor.
+ Der Mechanismus läuft dabei folgendermaßen ab: Sobald der IOC-Container
+ ein Bean instanziieren muss, dessen Konstruktor eine Liste von Objekten
+ erwartet, die das selbe Interface implementieren, werden alle im IOC-Container
+ befindlichen Beans auf die diese Eigenschaft zutrifft, in eine Liste verpackt
+ und dem konsumierenden Bean bei der Erstellung übergeben.
+\end_layout
+
+\begin_layout Standard
+Das Selbe Prinzip wird auch für Map-Parameter angewandt, wobei die einzelnen
+ Beans nun als Values in einer Map zusammengefasst werden.
+ Als Key wird jeweils der in der Konfiguration festgelegte Name des Beans
+ herangezogen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Spring: 
+\begin_inset Quotes eld
+\end_inset
+
+leichtgewichtige
+\begin_inset Quotes erd
+\end_inset
+
+ Standard-Contribution
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<!-- Java-Implementierung eines Listen-Konsumenten -->
+\end_layout
+
+\begin_layout Plain Layout
+
+public class ListValueHolder
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	public ListValueHolder(List<String> contributedStringList){}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<!-- Java-Implementierung eines Map-Konsumenten -->
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MapValueHolder
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	public MapValueHolder(Map<String, String> contributedStringMap){}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<!-- (XML) Bean Konfig des Listen-Konsumenten -->
+\end_layout
+
+\begin_layout Plain Layout
+
+<bean name="listValueHolder" class="org.springframework.contributions.ListValueHold
+er" />
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<!-- (XML) Bean Konfig des Map-Konsumenten -->
+\end_layout
+
+\begin_layout Plain Layout
+
+<bean name="mapValueHolder" class="org.springframework.contributions.MapValueHolder
+" />
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<!-- (XML) Konfiguration der Contribution Elemente für die Liste und die
+ Map-->
+\end_layout
+
+\begin_layout Plain Layout
+
+<bean name="string1" class="java.lang.String" value="String 1" />
+\end_layout
+
+\begin_layout Plain Layout
+
+<bean name="string2" class="java.lang.String" value="String 2" />
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO: Beschreibung des Listing mit Beispiel zur Konfiguration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
 
 \noun on
-SpringContributions 
+SpringContributions: 
 \noun default
-Contribution Mechanismus
+Umsetzung als Spring Erweiterung
 \end_layout
 
 \begin_layout Standard
 Das Spring Framework ist selbst aus Komponenten aufgebaut.
- Aus diesem Grund bietet das Framework auch eine einfache Möglichkeit neue
+ Aus diesem Grund bietet das Framework auch die einfache Möglichkeit, neue
  Komponenten in das Framework zu integrieren.
+ Dies hat sowohl Vorteile für die interne Weiterentwicklung, wie auch für
+ die Entwicklung von Erweiterungen durch Außenstehende.
  Um die aus dem Tapestry Framework bekannte Contribution Funktionalitäten
- auch in Spring einführen zu können, wurde genau diese Möglichkeit verwendet
+ auch in Spring einführen zu können, wurde genau diese Möglichkeiten verwendet
  und die eigene Spring Komponente 
 \noun on
 SpringContributions
@@ -2735,9 +3430,216 @@ SpringContributions
 \end_layout
 
 \begin_layout Standard
-Die Ausgangspunkte in der Entwicklung der neuen Komponente sind der eigener
- Namensraum und das zugehöriges XML-Schema.
- Die für Spring in der Version 3.0 entwickelten 
+Seit den Anfängen der Spring Framework Entwicklung gibt es auch den klassischen
+ XML-Konfigurationsmechanismus des Framework.
+ Wenn das Framework um neue Funktionalität und damit einhergehend die Konfigurat
+ion um neue Schlüsselwörter erweitert wurden, so geschah dies also immer
+ über die Definition von XML-Elementen.
+ Im Rahmen dieser Arbeit, wurde zu Beginn genau dieser klassische Weg gewählt,
+ um die 
+\noun on
+SpringContributions 
+\noun default
+Erweiterung umzusetzen.
+\end_layout
+
+\begin_layout Standard
+Seit der Hauptversion 3.0 bietet Spring, parallel zur XML-Konfiguration,
+ einen weiteren Weg der Konfiguration an.
+ Die neue Möglichkeit, Spring zu verwenden, nennt sich 
+\begin_inset Quotes eld
+\end_inset
+
+Java Configuration
+\begin_inset Quotes erd
+\end_inset
+
+ und wurde aus der zuvor eigenständig entwickelten Projekt 
+\begin_inset Quotes eld
+\end_inset
+
+Spring JavaConfig
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "SpringJavaConfig:2013"
+
+\end_inset
+
+ in das Spring Framework übernommen.
+ Dabei handelt es sich, wie der Name bereits vermuten lässt, um eine Möglichkeit
+, mittels der man die gesamte Spring Konfiguration eines Projektes in Java
+ Klassen vornehmen kann.
+ Es ist ein Einfaches, sich vorzustellen, dass es viele Vorteile geben kann,
+ die Konfiguration eines Projektes, statt in einer Auszeichnungssprache
+ wie XML, in einer Programmiersprache wie Java durchführen zu können.
+ Daher war es auch ein Ziel bei der Entwicklung der 
+\noun on
+SpringContributions 
+\noun default
+Erweiterung, eben auch diese zweite Konfigurationsmöglichkeit anzubieten.
+ Wie die Herangehensweise bei der Umsetzung des jeweiligen Konfigurationsmechani
+smus aussieht wird in den Unterabschnitten 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Spring-Erweiterung-mittels-XML-Config"
+
+\end_inset
+
+ und 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Spring-Erweiterung-mittels_Java-Config"
+
+\end_inset
+
+ behandelt.
+\end_layout
+
+\begin_layout Subsection
+Konzeptionelle Unterschiede von Tapestry zu 
+\noun on
+SpringContributions
+\end_layout
+
+\begin_layout Standard
+Das Spring IOC Modell unterscheidet sich in manchen Punkten deutlich vom
+ Tapestry IOC Modell.
+ Einer der Unterschiede wirkt sich dabei auch maßgeblich auf die Umsetzung
+ und die Funktionalität der 
+\noun on
+SpringContributions
+\noun default
+ aus.
+ Es handelt sich dabei um den Umstand, dass in Spring jedes Konfigurationseinhei
+t in ein Bean abgebildet wird.
+ Das Bean-Konzept in Spring schreibt vor, dass jedes Bean auf jeden Fall
+ eine eindeutige Identifikation besitzen muss.
+ Dieser Umstand wurde in der Konzeption der 
+\noun on
+SpringContributions
+\noun default
+ mit einbezogen und konnte dafür genutzt werden, durch eine kleine Abweichung
+ vom Vorbild des Tapestry Contributionmechanismus, einen Mehrwert in den
+ Verwendungsmöglichkeiten zu gewinnen.
+\end_layout
+
+\begin_layout Standard
+In Tapestry verhält es sich so, dass eine Contribution immer eindeutig einem
+ Konsumenten zugeordnet ist.
+ In der Spring-Konfiguration wird jede Contribution als eigenes Konfigurationsel
+ement und somit als eigenes Objekt bzw.
+ Bean behandelt.
+ Wie bereits erwähnt, erhält nun jedes Bean zur Identifikation auch einen
+ eigenen, eindeutigen Namen.
+ Daraus ergibt, dass in Spring eine Contribution, die ja als eigenes und
+ über den eindeutigen Namen, eindeutig referenzierbares Objekt existiert,
+ nicht nur von einem bestimmten, sondern von vielen beliebigen Konsumenten
+ verwendet werden kann.
+ Ist ein Contribution-Bean also einmal definiert, so kann jedes Bean, dass
+ sich nun dieser Contribution anschließen, oder sich ihrer bedienen will,
+ über deren eindeutigen Namen das tatsächliche Bean referenzieren.
+ Dieser Vorteil und die ebenso zu beachtenden Risiken bei der mehrfachen
+ Verwendung einer Contributions, wird im Unterabschnitt 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Contributions-mehrfach-konsumier"
+
+\end_inset
+
+ noch genauer beleuchtet.
+\end_layout
+
+\begin_layout Standard
+Der eben erwähnten Mehrwert in der Verwendung bringt aber auch gleichzeitig
+ neue Herausforderungen für den Anwender.
+ Dieser ist nämlich selbst für die Vergabe von Namen für Contributions verantwor
+tlich und muss sich deshalb selbst um deren Eindeutigkeit kümmern.
+ Wie der Name für ein Contribution-Bean definiert wird, ist im Detail im
+ Unterabschnitt 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Contribution-Bean-Identifikation"
+
+\end_inset
+
+ beschrieben.
+\end_layout
+
+\begin_layout Standard
+Zusätzlich ist es im Unterschied zur Tapestry Vorlage, durch das Wegfallen
+ der eindeutigen Zuordnung einer Contribution zu genau einem Konsumenten,
+ nötig den Namen der Contribution innerhalb der Konfiguration des Konsumenten
+ zu wissen und anzugeben.
+ Das automatische Auflösen der Referenzen von Konsument zu Contribution
+ durch den IOC-Container kann also in den 
+\noun on
+SpringContributions
+\noun default
+ nur mehr auf Basis des eindeutigen Namen funktionieren.
+\end_layout
+
+\begin_layout Standard
+Ein weiterer, konzeptioneller Unterschied zur Tapestry Vorlage betrifft
+ die Abbildung der Listenform eine Contribution.
+ In den 
+\noun on
+SpringContributions
+\noun default
+ wird nicht mehr extra zwischen unsortierten und sortierten Listen unterschieden.
+ Dieser Weg wurde gewählt, um die Menge der unterschiedlichen Konfigurationselem
+ente möglichst gering zu halten.
+ Es wird also nur mehr ein Konfigurations-Element für eine Contribution-Liste
+ benötigt, egal ob diese sortiert oder unsortiert sein soll.
+ Die Angabe einer Reihenfolge der Listenelemente wird über eine optionale
+ sortierungs Angabe ermöglicht.
+ Demnach besteht nur noch die Unterscheidung zwischen Listenübergabe und
+ 
+\begin_inset Quotes eld
+\end_inset
+
+gemappter
+\begin_inset Quotes erd
+\end_inset
+
+ Übergabeform.
+ Im 
+\noun on
+SpringContributions
+\noun default
+-Kontext werden für diese beiden Übergabeformen von nun an die Bezeichnungen
+ Contribution-Liste und Contribution-Map verwendet.
+\end_layout
+
+\begin_layout Subsection
+Die zwei Wege der Spring Erweiterung
+\end_layout
+
+\begin_layout Standard
+Dieser Abschnitt soll zeigen was genau gemacht werden muss, wenn man Spring
+ mit einer der beiden angebotenen Möglichkeiten um ein Modul erweitern möchte.
+\end_layout
+
+\begin_layout Subsubsection
+Erweiterung mittels Spring XML-Konfiguration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Spring-Erweiterung-mittels-XML-Config"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Entscheidet man sich, bei der Erweiterung von Spring dafür, den klassischen
+ Weg der XML-Konfiguration anzubieten, so sind die Ausgangspunkte in der
+ Entwicklung der neuen Komponente, ein eigener Namensraum und das zugehöriges
+ XML-Schema.
+ Die für Spring ab der Version 3.0 entwickelten 
 \noun on
 SpringContributions
 \noun default
@@ -2788,61 +3690,468 @@ Contribution
 \begin_inset Quotes erd
 \end_inset
 
- Mechanismus zu legen werden im XML-Schema einige neue Konfigurationselemente
+ Mechanismus zu legen, werden im XML-Schema einige neue Konfigurationselemente
  definiert.
- Der wichtigste Unterschied zwischen den 
-\noun on
-SpringContributions
-\noun default
- und der Tapestry Vorlage liegt darin, dass wir in der Spring Konfiguration
- jeder Contribution einen Namen geben und somit jede konkrete Übergabeform
- als eigenes Objekt bzw.
- Bean behandeln.
- Ist ein Contribution Objekt einmal definiert, so kann sich jedes Bean,
- dass sich nun dieser Contribution anschließen oder sich ihrer bedienen
- will, über deren Namen das tatsächliche Objekt referenzieren.
- Der Name eines Contribution Objekts kann also in einer Beandefinition referenzi
-ert werden (siehe Listing 
+ Jede dieser Konfigurationsmöglichkeiten wird in Unterabschnitt 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "lis:SpringContributions:Contribution-Reference"
+reference "sub:XML--und-Java-Konfiguration-im-Detail"
+
+\end_inset
+
+genauer beschrieben werden.
+ Dabei werden die zur Verwendung stehenden XML-Elemente und XML-Attribute,
+ ausgehend von deren Schemadefinition und im Hinblick auf ihre Anwendung
+ eingeführt.
+\end_layout
+
+\begin_layout Subsubsection
+Spring Erweiterung mittels Java-Konfiguration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Spring-Erweiterung-mittels_Java-Config"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Will man für eine eigene Spring Komponente die Konfiguration auch als Spring
+ Java-Konfiguration (siehe Kapitel 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Java-Variante-der-Spring-Konfig"
+
+\end_inset
+
+) ermöglichen, so gibt es zwei unterschiedliche Wege der Umsetzung.
+ Zum einen bietet Spring einen Eingriffsmöglichkeit, bei der man sich direkt
+ in die früheste Phase der Registrierung von Beandefinitionen einschalten
+ kann (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Spring-Java-Konfiguration_Eingriff während der Bean Definition Registrierung"
 
 \end_inset
 
 ).
- Das bedeutet das jedes Bean, das ein Contribution Objekt entgegen nimmt,
- dies auch in seiner XML-Definition bekannt geben muss.
+ Zum anderen kann man nach Ablauf der Standardregistrierung von Beandefinitionen
+ eingreifen und die bestehenden Definitionen verwenden, anpassen und auch
+ neue Definitionen hinzufügen (siehe Listeing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Spring-Java-Konfiguration_Eingriff nach der Bean Definition Registrierung"
+
+\end_inset
+
+).
+ Für eine erste Umsetzung der Java-Konfiguration für die 
+\noun on
+SpringContributions
+\noun default
+ habe ich mich für die zweite Variante entschieden.
+ Auf die Gründe für diese Entscheidung werde ich etwas später eingehen.
+ Zuvor werde ich noch die beiden möglichen Varianten der Umsetzung etwas
+ genauer vorstellen.
+\end_layout
+
+\begin_layout Paragraph*
+Eingriff während der Bean Definition Registrierung (Variante 1):
 \end_layout
 
 \begin_layout Standard
-Außerdem unterscheiden die 
+Ebenso wie ein XML-Konfigurationsfile muss auch eine Spring Java-Konfigurationsk
+lasse zu aller erst geparst werden.
+ Danach werden alle Annotationen (
+\family sans
+\series bold
+@PropertySource
+\family default
+\series default
+, 
+\family sans
+\series bold
+@ComponentScan
+\family default
+\series default
+, 
+\family sans
+\series bold
+@Import
+\family default
+\series default
+,
+\family sans
+\series bold
+ @Bean
+\family default
+\series default
+, ...
+ ) und deren Metadaten in einer fixen Reihenfolge abgearbeitet.
+ Jeder Schritt in dieser Abarbeitungskette behandeln eine ganz bestimmte
+ Annotation und den zugehörigen Konfigurationscode.
+ Dabei bietet die Abarbeitung der 
+\family sans
+\series bold
+@Import
+\family default
+\series default
+ Annotationen, die noch vor der 
+\family sans
+\series bold
+@Bean
+\family default
+\series default
+ Annotation an dritter Stelle behandelt wird, den Anknüpfungspunkt für eigene
+ Erweiterungen der Java-Konfiguration.
+ Über diesen Weg lässt sich ein eigener 
+\family sans
+\shape italic
+ImportBeanDefinitionRegistrar
+\family default
+\shape default
+ definieren, in den die Logik zum Registrieren der Beandefinitionen kommt.
+ Dieser Klasse lässt sich dann über die 
+\family sans
+\series bold
+@Import
+\family default
+\series default
+ Annotation an eine eigens definierte Annotation (z.B.
+ 
+\family sans
+\series bold
+@EnableContributions
+\family default
+\series default
+) binden.
+ Verwendet man nun diese selbst definierte Annotation innerhalb einer Java-Konfi
+guration, so wird also beim Abarbeiten der Imports die 
+\family sans
+\shape italic
+registerBeanDefinitions
+\family default
+\shape default
+ Methode der 
+\family sans
+\shape italic
+ImportBeanDefinitionRegistrar
+\family default
+\shape default
+-Klasse aufgerufen und die eigenen Logik zum registrieren von Beandefinitionen
+ angewandt.
+\end_layout
+
+\begin_layout Standard
+Bei diesem Weg der Erweiterung befindet man sich zeitlich noch vor der Spring
+ eigenen Beandefinition Registrierung und damit sehr früh in der Abfolge
+ der IOC-Registry Erstellung.
+ Das würde den Vorteil ergeben, dass alle mit 
+\family sans
+\series bold
+@Bean
+\family default
+\series default
+ definierten Services bereits die Contribution-Konfiguration verwenden könnten.
+ Umgekehrt besteht natürlich nicht die Möglichkeit, bei der Abarbeitung
+ der Contribution-Konfiguration, bereits auf die Beandefinitionen zuzugreifen.
+ Wenn man also die Beans für die Contribution schon zu diesem Zeitpunkt
+ benötigte, so müsste man sich ebenfalls selbst darum kümmern.
+ Das heißt, man müsste äquivalent zur 
+\family sans
+\series bold
+@Bean
+\family default
+\series default
+ Annotation, eine eigene Konfiguration für Beans anbieten.
+ Darüber könnte man schließlich Beans definieren deren Definition dann bereits
+ zum Erstellungszeitpunkt der Contribution-Konfiguration zur Verfügung stehen
+ würden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Spring Java-Konfiguration Erweiterung (Variante 1)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spring-Java-Konfiguration_Eingriff während der Bean Definition Registrierung"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/CreatingBeanDefinitionsFromConfigurations (JAVA).eps
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Eingriff nach der Bean Definition Registrierung (Variante 2):
+\begin_inset CommandInset label
+LatexCommand label
+name "par:Java-Konfig-Variante2"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bei dieser Variante kann mittels eines Postprozessors, beim Erstellen des
+ ApplicationContext, die vom Spring-Kern erstellte IOC-Konfiguration, in
+ einer zuletzt gereihten Phase, angepasst werden.
+ Zu diesem späten Zeitpunkt sind bereits alle Spring eigenen Standardkonfigurati
+onen als Beandefinitionen in der IOC-Registry abgelegt.
+ Nun kann man innerhalb einer Implementierung des Interfaces 
+\family sans
+\shape italic
+BeanDefinitionRegistryPostProcessor
+\family default
+\shape default
+ den Code zur Abarbeitung der 
 \noun on
-SpringContributions 
+SpringContributions
 \noun default
-nicht mehr extra zwischen unsortierten und sortierten Listen.
- Es besteht nur noch die Unterscheidung zwischen Listenübergabe und 
+-Konfiguration realisieren.
+ Hier ist es dann natürlich möglich, alle bereits bestehenden Beandefinitionen
+ in der Abarbeitung der Contribution-Konfiguration zu berücksichtigen und
+ zu referenzieren.
+ Man hat hier also den Vorteil, sich nur um die Cotribution-Bean-Erstellung,
+ und nicht um die normale Bean-Erstellung selbst kümmern zu müssen, da diese
+ ja bereits im Standardablauf von Spring erstellt wurden.
+\end_layout
+
+\begin_layout Standard
+Natürlich besteht bei dieser Variante nicht die Möglichkeit, dass in der
+ normalen Beandefinition Abarbeitung bereits auf die Contribution-Definitionen
+ zugegriffen werden kann, da diese ja erst im Postprozessor erstellt werden.
+ Konkret bedeutet das für die Umsetzung der 
+\noun on
+SpringContributions
+\noun default
+, dass für die normalen mit 
+\family sans
+\series bold
+@Bean
+\family default
+\series default
+ annotierten Bean-Konfigurationen eine Indirektion zum Zugriff auf Conribution-B
+eans verwendet werden muss.
+ Dazu müssen eigene 
 \begin_inset Quotes eld
 \end_inset
 
-gemappter
+Resolver
 \begin_inset Quotes erd
 \end_inset
 
- Übergabeform.
- Jede Konfigurationsmöglichkeit die für die 
-\noun on
-SpringContributions 
-\noun default
-angeboten wird
-\noun on
-,
-\noun default
- ist daher auch immer in doppelter Form vorhanden.
- Im Folgenden werden die einzelnen Konfigurationsmöglichkeiten anhand der
- zu verwendenden XML-Elemente und XML-Attribute im Detail beschrieben.
+-Services angeboten werden, die schon zum Erstellungszeitpunkt der Beans
+ zur Verfügung stehen und später einen Zugriff auf die Contribution-Beans
+ ermöglichen.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Spring Java-Konfiguration Erweiterung (Variante 2)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spring-Java-Konfiguration_Eingriff nach der Bean Definition Registrierung"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename pics/CreatingBeanDefinitionsFromConfigurations (JAVA)_postprocess.eps
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+Bei der Konzeption der Contribution-Map Funktionalität für die Java-Konfiguratio
+n ergaben sich einige Probleme dabei, exakt dasselbe Set an Konfigurationsmöglic
+hkeiten zur Verfügung zu stellen wie es bereits in der XML-Variante umgesetzt
+ wurde.
+ In Spring hat man sich bei der Java-Konfiguration dafür entschieden Konfigurati
+onsmetadaten über Annotationen abzubilden.
+ Aus Gründen der Konsistenz baut die Java-Konfiguration der 
+\noun on
+SpringContributions
+\noun default
+ ebenfalls auf Annotationen auf.
+ Durch diese Vorgabe ergaben sich jedoch einige Schwierigkeiten in der Umsetzung
+ der Funktionsumfangs.
+ Die momentane Implementierung bildet daher einen Kompromiss aus dem Streben
+ nach Äquivalenz zur XML-Konfiguration und dem Bemühen, die die Java-Konfigurati
+on überschaubar und verwendbar zu gestalten.
+ So wurde zum Beispiel die Möglichkeit weggelassen, konkrete Beans beziehungswei
+se Objekte als Schlüsselelement der Map verwenden zu können.
+ Auf diese Möglichkeit musste verzichtet werden, da man in einer Annotation
+ keine konkreten Objektinstanzen übergeben kann.
+\end_layout
+
+\begin_layout Standard
+Da Enumerationen sich, seit ihrer Einführung in Java, einer sehr hohen Beliebthe
+it erfreuen, war es wichtig die Möglichkeiten der Verwendung von Enumerationen
+ als Schlüssel der Contribution-Map umzusetzen.
+ Dies konnte leider, wieder auf Grund der Eigenschaften von Annotationen,
+ nur über die Verwendung von zwei Parametern Enumeration-Klasse und Enumeration-
+Wert verwirklicht werden (siehe Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:(Java)-Contribution-Map:-Enumeration Key Definition"
+
+\end_inset
+
+).
+ Die direkte Angabe einer konkreten Enumeration wie dies in der XML-Konfiguratio
+n möglich ist, konnte nicht umgesetzt werden.
+ Daraus bewirkt, dass sich der Vorteil der IDE-Unterstützung bezüglich der
+ Referenzsuche im Javacode im Falle der Konfiguration für eine Contribution-Map
+ nicht voll ausnutzen lässt.
+\end_layout
+
+\begin_layout Standard
+Ein letzter wichtiger Punkt war die Verwendung von Klassen als Schlüssel
+ der Contribution-Map.
+ Da es bei der Verwendung des Strategy-Services (siehe Kapitel 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Strategy-Service"
+
+\end_inset
+
+) unbedingt notwendig ist Klassen als Schlüssel in einer Contribution-Map
+ zu verwenden, konnte auf diese Funktionalität nicht verzichtet werden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Ergänzung: wie ging das? Probleme?
+\end_layout
+
+\begin_layout Plain Layout
+Wie kann bei der Erweiterung von Spring um ein neues Modul, dessen Funktionalitä
+t mittels Java-Konfiguration gesteuert werden
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+XML- und Java-Konfiguration im Detail
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:XML--und-Java-Konfiguration-im-Detail"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+(XML) Contributions Referenzieren
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:SpringContribution:XML-cotribution-ref"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die folgenden beiden XML-Elemente können verwendet werden um Contributions
+ der verschiedenen Typen zu referenzieren.
+\end_layout
+
+\begin_layout Subparagraph
 XML-Element 
 \begin_inset Quotes eld
 \end_inset
@@ -2860,13 +4169,6 @@ mapped-contribution-ref
 \end_inset
 
 :
-\begin_inset CommandInset label
-LatexCommand label
-name "par:SpringContribution:XML-Element-contribution-ref"
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -2882,16 +4184,9 @@ contribution-ref
 \begin_inset Quotes erd
 \end_inset
 
- wird ein Contribution Listen Objekt referenziert.
- Möchte man eine 
-\begin_inset Quotes eld
-\end_inset
-
-Mapped Configuration
-\begin_inset Quotes erd
-\end_inset
-
- referenzieren, so muss man das XML-Element 
+ wird ein Contribution-Listen Objekt referenziert.
+ Möchte man eine Contribution-Map referenzieren, so muss man das XML-Element
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2904,7 +4199,7 @@ mapped-contribution-ref
 \end_inset
 
  verwenden.
- Für beide Formen gilt, dass in dem XML-Attribut 
+ Für beide Typen gilt, dass in dem XML-Attribut 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2916,14 +4211,14 @@ name
 \begin_inset Quotes erd
 \end_inset
 
- der Name des zu verwendenden Contribution Objekts angegeben wird.
+ der Name des zu verwendenden Contribution-Bean angegeben wird.
  Beide XML-Elemente können nun an allen möglichen Stellen, also z.B.
  innerhalb einer Konstruktor Definition oder auch in einer Setter Definition
- eines Beans als Referenzierung auf das Contribution Objekt verwendet werden
+ eines Beans als Referenzierung auf das Contribution-Bean verwendet werden
  (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "lis:SpringContributions:Contribution-Reference"
+reference "lis:SpringContributions-XML:Contribution-Reference"
 
 \end_inset
 
@@ -2966,14 +4261,141 @@ status open
 \noun on
 SpringContributions: 
 \noun default
-Verwendung von Contribution Referenzen für Konstruktor- und Setter-Injection
-\begin_inset CommandInset label
-LatexCommand label
-name "lis:SpringContributions:Contribution-Reference"
+XML-Schema für die XML-Elemente 
+\begin_inset Quotes eld
+\end_inset
+
+contribution-ref
+\begin_inset Quotes erd
+\end_inset
+
+ und 
+\begin_inset Quotes eld
+\end_inset
+
+mapped-contribution-ref
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<xsd:element name="contribution-ref" type="ContributionType" />
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<xsd:element name="mapped-contribution-ref" type="ContributionType" />
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<xsd:complexType name="ContributionType">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<xsd:attribute name="name" type="xsd:string">
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+			<xsd:documentation><![CDATA[The name of the contribution, beans were
+ added to.]]></xsd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</xsd:attribute>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xsd:complexType>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:SpringContributions-XML:Contribution-Reference"
+
+\end_inset
+
+
+\noun on
+SpringContributions: 
+\noun default
+Verwendung von Contribution Referenzen für Konstruktor- und Setter-Injection
 \end_layout
 
 \end_inset
@@ -3010,8 +4432,8 @@ s/spring-contributions-3.0.xsd">
 
 \begin_layout Plain Layout
 
-		<!-- Referenzierung von Contribution Objekten in einer Bean mit Konstruktor-In
-jektion -->
+		<!-- Referenzierung einer Contribution-Liste und einer Mapped Configuration
+ in einem Bean mit Konstruktor-Injektion -->
 \end_layout
 
 \begin_layout Plain Layout
@@ -3055,8 +4477,8 @@ jektion -->
 
 \begin_layout Plain Layout
 
-		<!-- Referenzierung von Contribution Objekten in einer Bean mit Setter-Injekti
-on -->
+		<!-- Referenzierung einer Contribution-Liste und einer Contribution-Map
+ in einem Bean mit Setter-Injektion -->
 \end_layout
 
 \begin_layout Plain Layout
@@ -3143,25 +4565,344 @@ on -->
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 \begin_inset VSpace bigskip
 \end_inset
 
 
 \end_layout
 
-\begin_layout Subsection
-Hinzufügen von Beans zu Contribution Listen
+\begin_layout Subsubsection
+(Java) Contributions Referenzieren
+\end_layout
+
+\begin_layout Standard
+Für die 
+\noun on
+SpringContributions
+\noun default
+ wurden zwei 
+\begin_inset Quotes eld
+\end_inset
+
+Resolver
+\begin_inset Quotes erd
+\end_inset
+
+-Services (OrderedContributionResolver und MappedContributionResolver) implement
+iert, mit deren Hilfe es leicht möglich ist ein Contribution-Objekt, nur
+ durch die Angabe des Contributionnamen, zu erhalten.
+ Die Notwendigkeit für diese beiden Services kommt daher, da die Java-Konfiguati
+on der 
+\noun on
+SpringContributions
+\noun default
+ in ihrer aktuellen Umsetzung (siehe Abschnitt 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "par:Java-Konfig-Variante2"
+
+\end_inset
+
+) erst nach der Standard-Beankonfiguration durchgeführt wird.
+ Zur Abarbeitungszeit der Standard-Beankonfiguration steht also noch keine
+ Contribution-Objekte bereit und die Abhängigkeiten von Beans auf Contribution-O
+bjeke können vom IOC-Kontainer also noch nicht aufgelöst werden.
+ Würde man also in einer Beankonfiguration direkt auf ein Contribution-Objekt
+ zugreifen wollen, so müsste das zu einem Fehler führen.
+ Durch die Indirektion über die beiden 
+\begin_inset Quotes eld
+\end_inset
+
+Resolver
+\begin_inset Quotes erd
+\end_inset
+
+-Services kann dieses Problem umgangen werden.
+ In der XML-Konfiguration werden die beiden Services nicht benötigt, da
+ diese gleichzeitig mit der normalen Spring-XML-Konfiguration verarbeitet
+ wird und somit Contribution-Objekte wie Beans so zu sagen 
+\begin_inset Quotes eld
+\end_inset
+
+gleichzeitig
+\begin_inset Quotes erd
+\end_inset
+
+ erstellt werden.
+\end_layout
+
+\begin_layout Standard
+Die 
+\begin_inset Quotes eld
+\end_inset
+
+Resolver
+\begin_inset Quotes erd
+\end_inset
+
+-Services bieten, wegen der Typisierbarkeit ihrer Rückgabe, auch noch den
+ Vorteil, dass im Vergleich zu einem Bean-Objek das man direkt aus dem Spring-Ap
+plicationcontext bezieht, keine Typspezifizierung mittels 
+\begin_inset Quotes eld
+\end_inset
+
+Cast
+\begin_inset Quotes erd
+\end_inset
+
+-Befehl mehr auf das gelieferte Objekt angewendet werden muss.
+\end_layout
+
+\begin_layout Standard
+Zusätzlich kommt den 
+\begin_inset Quotes eld
+\end_inset
+
+Resolver
+\begin_inset Quotes erd
+\end_inset
+
+-Services noch die Aufgabe der Fehlerbehandlung zu.
+ Für den Fall, dass ein Contribution-Objekt tatsächlich nicht vorhanden
+ ist, wird durch sie eine Warnung ausgegeben.
+ Anstatt des Contribution-Objekts wird dann eine leere Liste oder Map zurückgege
+ben.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO
+\end_layout
+
+\begin_layout Plain Layout
+Ergänzung: Zusätzlich Unterstützung durch automatisches Ergänzen des Contributio
+nnamenprefixes
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+SpringContributions 
+\noun default
+Java: Einfache und sortierte Listenübergabe
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Configuration
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Referenzierung einer Contribution-Liste und einer Contribution-Map in
+ einem Bean mit Konstruktor
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean()
+\end_layout
+
+\begin_layout Plain Layout
+
+	public static MyConstructorInitializedService constructorClassName(
+\end_layout
+
+\begin_layout Plain Layout
+
+		OrderedContributionResolver<MyListElement> list,
+\end_layout
+
+\begin_layout Plain Layout
+
+		MappedContributionResolver<MyMapElement> map)
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new MyKonstructorServiceImpl(list.resolve("contributionName"), map.resolv
+e("mappedContributionName");
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Referenzierung einer Contribution-Liste und einer Contribution-Map in
+ einem Bean mit Setter
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean()
+\end_layout
+
+\begin_layout Plain Layout
+
+	public static MySetterInitializedService setterClassName(
+\end_layout
+
+\begin_layout Plain Layout
+
+		OrderedContributionResolver<MyListElement> list,
+\end_layout
+
+\begin_layout Plain Layout
+
+		MappedContributionResolver<MyMapElement> map)
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		MySetterInitializedService service = new MySetterServiceImpl();
+\end_layout
+
+\begin_layout Plain Layout
+
+		service.setList(list.resolve("contributionName"));
+\end_layout
+
+\begin_layout Plain Layout
+
+		service.setMap(map.resolve("mappedContributionName"));
+\end_layout
+
+\begin_layout Plain Layout
+
+		return service;
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+(XML) Hinzufügen von Beans zu einer Contribution-Liste
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Die-Contribution-Liste-in-XML"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 Da uns in XML sowohl Elemente als auch Attribute zur Verfügung stehen, haben
- wir die Möglichkeit zum Hinzufügen von Beans zu einer Contribution Liste
- auf zwei Arten realisiert.
- //TODO
+ wir aus Flexibilitätsgründen die Möglichkeit zum Hinzufügen von Beans zu
+ einer Contribution-Liste auf drei Arten realisiert.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
+Will man also ein Bean zu einer Contribution-Liste hinzuzufügen, so kann
+ man sich der drei folgenden Varianten bedienen: 
+\end_layout
+
+\begin_layout Subparagraph
 XML-Attribut 
 \begin_inset Quotes eld
 \end_inset
@@ -3174,10 +4915,8 @@ contributeTo
 \end_layout
 
 \begin_layout Standard
-Dieses Attribut kann verwendet werden um ein Bean zu einer Contribution
- Liste hinzuzufügen.
- Dabei wird der Konfiguration mitgeteilt, dass das eben definierte Bean
- ein Element der Contribution Liste mit dem im XML-Attribut 
+Mit diesem Attribut legt man in der Konfiguration fest, dass das eben definierte
+ Bean ein Element der Contribution-Liste, mit dem im XML-Attribut 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3189,10 +4928,10 @@ contributeTo
 \begin_inset Quotes erd
 \end_inset
 
- definierten Namen werden soll (siehe Listing 
+ definierten Namen, werden soll (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "lis:SpringContributions:contributeTo"
+reference "lis:SpringContributions-XML:contributeTo"
 
 \end_inset
 
@@ -3235,8 +4974,7 @@ status open
 \noun on
 SpringContributions: 
 \noun default
-Einfache Elementdefinition für normale Listenkonfiguration über XML-Attribut
- 
+XML-Schema für das XML-Attribut 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3244,11 +4982,89 @@ contributeTo
 \begin_inset Quotes erd
 \end_inset
 
+ 
+\end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<xsd:attribute name="contributeTo" type="xsd:string"></xsd:attribute>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "lis:SpringContributions:contributeTo"
+name "lis:SpringContributions-XML:contributeTo"
 
+\end_inset
+
+
+\noun on
+SpringContributions XML: 
+\noun default
+Einfache Elementdefinition für normale Listenkonfiguration über XML-Attribut
+ 
+\begin_inset Quotes eld
+\end_inset
+
+contributeTo
+\begin_inset Quotes erd
 \end_inset
 
 
@@ -3330,7 +5146,7 @@ s/spring-contributions-3.0.xsd">
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 \begin_inset VSpace bigskip
 \end_inset
 
@@ -3358,7 +5174,7 @@ contribute
 \begin_inset Quotes erd
 \end_inset
 
- erreicht man das selbe Ergebnis wie mit dem XML-Attribut 
+ erreicht man dasselbe Ergebnis wie mit dem XML-Attribut 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3370,11 +5186,11 @@ contributeTo
 \begin_inset Quotes erd
 \end_inset
 
- und kann also ein Bean zu einer Contribution Liste hinzufügen (siehe Listing
+ und kann also ein Bean zu einer Contribution-Liste hinzufügen (siehe Listing
  
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "lis:SpringContributions:contribute"
+reference "lis:SpringContributions-XML:contribute"
 
 \end_inset
 
@@ -3391,8 +5207,8 @@ constraints
 \begin_inset Quotes eld
 \end_inset
 
- Attribut zu verwenden, um die Reihenfolge des Elements in der Contributionliste
- zu beeinflussen.
+ Attribut zu verwenden, um damit die Reihenfolge des Elements in der Contributio
+n-Liste zu beeinflussen.
 \end_layout
 
 \begin_layout Standard
@@ -3431,8 +5247,7 @@ status open
 \noun on
 SpringContributions: 
 \noun default
-Einfache Elementdefinition für normale Listenkonfiguration über XML-Element
- 
+XML-Schema für das XML-Element 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3440,11 +5255,153 @@ contribute
 \begin_inset Quotes erd
 \end_inset
 
+ 
+\end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<xsd:element name="contribute">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<xsd:complexType>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:attribute name="to" type="xsd:string">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+				<xsd:documentation><![CDATA[The name of the contribution this bean is
+ added to.]]></xsd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:attribute>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:attribute name="constraints" type="xsd:string">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+				<xsd:documentation><![CDATA[The sort constraints for this contribution.]]></x
+sd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:attribute>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</xsd:complexType>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xsd:element>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "lis:SpringContributions:contribute"
+name "lis:SpringContributions-XML:contribute"
 
+\end_inset
+
+
+\noun on
+SpringContributions XML: 
+\noun default
+Einfache Elementdefinition für normale Listenkonfiguration über XML-Element
+ 
+\begin_inset Quotes eld
+\end_inset
+
+contribute
+\begin_inset Quotes erd
 \end_inset
 
 
@@ -3526,14 +5483,14 @@ s/spring-contributions-3.0.xsd">
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 \begin_inset VSpace bigskip
 \end_inset
 
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 XML-Element 
 \begin_inset Quotes eld
 \end_inset
@@ -3558,7 +5515,7 @@ contribution
 \begin_inset Quotes erd
 \end_inset
 
- ist es möglich, gleich mehrere Beans zu einer Contribution Liste hinzu
+ ist es möglich, gleich mehrere Beans zu einer Contribution-Liste hinzu
  zu fügen.
  Die Angabe des Namens des Contributionobjekts, zu dem die Elemente hinzugefügt
  werden sollen, wird auch hier über das Attribut 
@@ -3579,7 +5536,7 @@ to
 SpringContributions 
 \noun default
 nicht zwischen der sortierten und der unsortierten Listenübergabeform.
- Jede Konfiguration einer Contribution Liste kann über das XML-Attribut
+ Jede Konfiguration einer Contribution-Liste kann über das XML-Attribut
  
 \begin_inset Quotes eld
 \end_inset
@@ -3662,11 +5619,11 @@ Entry
 \begin_inset Quotes erd
 \end_inset
 
- definierte Element der Contribution Liste, eine referenzierbare Beandefinition
+ definierte Element der Contribution-Liste, eine referenzierbare Beandefinition
  innerhalb der Konfigurationsfiles vorliegen muss (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "lis:SpringContributions:contribution-Element"
+reference "lis:SpringContributions-XML:contribution-Element"
 
 \end_inset
 
@@ -3709,13 +5666,292 @@ status open
 \begin_layout Plain Layout
 
 \noun on
-\begin_inset CommandInset label
-LatexCommand label
-name "lis:SpringContributions:contribution-Element"
+SpringContributions: 
+\noun default
+XML-Schema für das XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+contribution
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\end_layout
 
 \end_inset
 
-SpringContributions: 
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<xsd:element name="contribution">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:documentation source="java:org.springframework.beans.factory.config.ListFactor
+yBean">
+\end_layout
+
+\begin_layout Plain Layout
+
+			Builds a List instance, populated with the specified content.
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:appinfo>
+\end_layout
+
+\begin_layout Plain Layout
+
+			<tool:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+				<tool:exports type="java.util.List"/>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</tool:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:appinfo>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<xsd:complexType>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:group ref="contributionElements"/>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:attribute name="to" type="xsd:string">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+				<xsd:documentation><![CDATA[The name of the contribution this bean is
+ added to.]]></xsd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:attribute>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</xsd:complexType>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xsd:element>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<xsd:group name="contributionElements">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<xsd:sequence>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:element ref="beans:description" minOccurs="0"/>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:element name="entry" minOccurs="1" maxOccurs="unbounded">
+\end_layout
+
+\begin_layout Plain Layout
+
+			<xsd:complexType>
+\end_layout
+
+\begin_layout Plain Layout
+
+				<xsd:complexContent>
+\end_layout
+
+\begin_layout Plain Layout
+
+					<xsd:extension base="beans:propertyType">
+\end_layout
+
+\begin_layout Plain Layout
+
+						<xsd:attribute name="constraints" type="xsd:string">
+\end_layout
+
+\begin_layout Plain Layout
+
+							<xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+								<xsd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+									<![CDATA[The sort constraints for this contribution.]]>
+\end_layout
+
+\begin_layout Plain Layout
+
+								</xsd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+							</xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+						</xsd:attribute>
+\end_layout
+
+\begin_layout Plain Layout
+
+					</xsd:extension>
+\end_layout
+
+\begin_layout Plain Layout
+
+				</xsd:complexContent>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</xsd:complexType>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:element>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</xsd:sequence>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xsd:group>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:SpringContributions-XML:contribution-Element"
+
+\end_inset
+
+SpringContributions XML: 
 \noun default
 Mehrfache Elementdefinition für normale und sortierte Listenkonfiguration
 \end_layout
@@ -3806,14 +6042,236 @@ s/spring-contributions-3.0.xsd">
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 \begin_inset VSpace bigskip
 \end_inset
 
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
+(Java) Hinzufügen von Beans zu einer Contribution-Liste
+\end_layout
+
+\begin_layout Paragraph*
+Die Contribution-Liste in Java:
+\end_layout
+
+\begin_layout Standard
+In der Java-Konfiguration gibt es nicht wie in der XML-Konfiguration drei
+ Schreibweisen (siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Die-Contribution-Liste-in-XML"
+
+\end_inset
+
+), sondern nur noch eine Möglichkeit ein Bean zu einer Contribution-Liste
+ hinzuzufügen.
+ Dafür wird die Annotation 
+\series bold
+@Contribution()
+\series default
+ mit dem Parameter 
+\begin_inset Quotes eld
+\end_inset
+
+to
+\begin_inset Quotes erd
+\end_inset
+
+ verwendet.
+ Ob das Element eine festgelegte Position in der Contribution-Liste erhalten
+ soll oder nicht, wird über das Hinzufügen oder Weglassen des Attributs
+ 
+\begin_inset Quotes eld
+\end_inset
+
+constraints
+\begin_inset Quotes erd
+\end_inset
+
+ gesteuert.
+ In Listing 
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+SpringContributions 
+\noun default
+Java: Einfache und sortierte Listenübergabe
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Configuration
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Ein Bean das der Contribution-Liste "elements" als Element hinzugefügt
+ wird;
+\end_layout
+
+\begin_layout Plain Layout
+
+	// ohne Information zu Positionierung in der Liste
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Contribution(to="elements")
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean(name="MyServiceDependencyElementImplOne")
+\end_layout
+
+\begin_layout Plain Layout
+
+	public MyServiceDependencyElement one()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new MyServiceDependencyElementImplOne();
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Ein weiteres Bean das der Contribution-Liste "elements" als Element
+ hinzugefügt wird;
+\end_layout
+
+\begin_layout Plain Layout
+
+	// mit Information zur Positionierung in der Liste
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Contribution(to="elements", constraints="after:*")
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean(name="MyServiceDependencyElementImplTwo")
+\end_layout
+
+\begin_layout Plain Layout
+
+	public MyServiceDependencyElement two()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new MyServiceDependencyElementImplTwo();
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+(XML) Hinzufügen von Beans zu einer Contribution-Map
+\end_layout
+
+\begin_layout Subparagraph
 XML-Element 
 \begin_inset Quotes eld
 \end_inset
@@ -3826,15 +6284,7 @@ mapped-contribution
 \end_layout
 
 \begin_layout Standard
-Möchte man mehrere Elemente zu einer 
-\begin_inset Quotes eld
-\end_inset
-
-Mapped Configuration
-\begin_inset Quotes erd
-\end_inset
-
- (siehe 
+Möchte man mehrere Elemente zu einer Contribution-Map (siehe 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Mapped-Configuration"
@@ -3917,11 +6367,205 @@ value-ref
  (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "lis:SpringContributions:mapped-contribution-Element"
+reference "lis:SpringContributions-XML:mapped-contribution-Element"
 
 \end_inset
 
 ).
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+SpringContributions: 
+\noun default
+XML-Schema für das XML-Element 
+\begin_inset Quotes eld
+\end_inset
+
+contribution
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<xsd:element name="mapped-contribution">
+\end_layout
+
+\begin_layout Plain Layout
+
+	<xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:documentation source="java:org.springframework.beans.factory.config.MapFactory
+Bean">
+\end_layout
+
+\begin_layout Plain Layout
+
+			Builds a Map instance of the specified type, populated with the specified
+ content.
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:appinfo>
+\end_layout
+
+\begin_layout Plain Layout
+
+			<tool:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+				<tool:exports type="java.util.Map"/>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</tool:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:appinfo>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+	<xsd:complexType>
+\end_layout
+
+\begin_layout Plain Layout
+
+		<xsd:complexContent>
+\end_layout
+
+\begin_layout Plain Layout
+
+			<xsd:extension base="beans:mapType">
+\end_layout
+
+\begin_layout Plain Layout
+
+				<xsd:attribute name="to" type="xsd:string">
+\end_layout
+
+\begin_layout Plain Layout
+
+					<xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+						<xsd:documentation><![CDATA[The name of the contribution this bean
+ is added to.]]></xsd:documentation>
+\end_layout
+
+\begin_layout Plain Layout
+
+					</xsd:annotation>
+\end_layout
+
+\begin_layout Plain Layout
+
+				</xsd:attribute>
+\end_layout
+
+\begin_layout Plain Layout
+
+			</xsd:extension>
+\end_layout
+
+\begin_layout Plain Layout
+
+		</xsd:complexContent>
+\end_layout
+
+\begin_layout Plain Layout
+
+	</xsd:complexType>
+\end_layout
+
+\begin_layout Plain Layout
+
+</xsd:element>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset VSpace bigskip
 \end_inset
 
@@ -3957,21 +6601,13 @@ status open
 \noun on
 \begin_inset CommandInset label
 LatexCommand label
-name "lis:SpringContributions:mapped-contribution-Element"
+name "lis:SpringContributions-XML:mapped-contribution-Element"
 
 \end_inset
 
-SpringContributions: 
+SpringContributions XML: 
 \noun default
-Mehrfache Elementdefinition für 
-\begin_inset Quotes eld
-\end_inset
-
-gemappte
-\begin_inset Quotes erd
-\end_inset
-
- Konfiguration
+Mehrfache Elementdefinition für eine Contribution-Map
 \end_layout
 
 \end_inset
@@ -4059,7 +6695,162 @@ s/spring-contributions-3.0.xsd">
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+(Java) Hinzufügen von Beans zu einer Contribution-Map
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Beschreibung zum Konfigurationsbeispiel Listing
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\noun on
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:SpringContributions-Java:mapped-contribution-Element"
+
+\end_inset
+
+SpringContributions 
+\noun default
+Java
+\noun on
+: 
+\noun default
+Bean Definition und Übergabe an eine Contribution-Map
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Configuration
+\end_layout
+
+\begin_layout Plain Layout
+
+public class MyModulConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	@ContributionMapped(bean="myContributedService",
+\end_layout
+
+\begin_layout Plain Layout
+
+		to="contributionName", key="myServiceKey")
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean(name="myContributedService")
+\end_layout
+
+\begin_layout Plain Layout
+
+	public MyContributedService myService()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new MyContributedServiceImpl();
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subparagraph
 \begin_inset VSpace bigskip
 \end_inset
 
@@ -4069,7 +6860,7 @@ s/spring-contributions-3.0.xsd">
 \begin_layout Section
 
 \noun on
-SpringContributions
+SpringContributions:
 \noun default
  Realisierung
 \end_layout
@@ -4079,10 +6870,13 @@ In den letzten Abschnitten wurden die Anwendungsmöglichkeiten der
 \noun on
 SpringContributions
 \noun default
- gezeigt, in diesem Abschnitt soll nun ein Einblick in die Implementierung
- des Moduls gegeben werden.
- Zuerst wird gezeigt wie der Spring Konfiguration Mechanismus erweitert
- wird, damit die neuen Schlüsselwörter wie z.B.
+ gezeigt, in diesem Abschnitt soll nun in drei Teilen ein Einblick in die
+ Implementierung des Moduls gegeben werden.
+\end_layout
+
+\begin_layout Standard
+Zuerst wird gezeigt wie der über traditionelle XML gesteuerte Spring Konfigurati
+onsmechanismus erweitert wird, damit die neuen Schlüsselwörter wie z.B.
  
 \begin_inset Quotes eld
 \end_inset
@@ -4092,18 +6886,32 @@ contribution
 \end_inset
 
  erkannt und in Beandefinitionen umgewandelt werden können.
- Danach wird die Erstellung der Beandefinitionen genauer beschrieben und
- ein Überblick über das Zusammenspiel von Spring und der neu entstandene
- Spring Konfiguration gegeben.
+\end_layout
+
+\begin_layout Standard
+Die 
+\noun on
+SpringContributions 
+\noun default
+unterstützen für auch die in Spring neu vorhandene Möglichkeit der Java-Konfigur
+ation.
+ Ein weiterer Unterabschnitt zeigt ebenfalls die dafür nötigen Erweiterungen
+ im Detail.
+\end_layout
+
+\begin_layout Standard
+Abschließend wird die, für beide Konfigurationsarten gleiche, Erstellung
+ der Beandefinitionen genauer beschrieben und ein Überblick über das Zusammenspi
+el von Spring und der neu entstandene Spring Konfiguration gegeben.
 \end_layout
 
 \begin_layout Subsection
-Erweiterung der Spring XML-Konfiguration
+(XML) Erweiterung der Spring Konfiguration
 \end_layout
 
 \begin_layout Standard
 Spring bietet von Haus aus eine Möglichkeit zur Erweiterung seines XML-Konfigura
-tion Mechanismus.
+tionsmechanismus.
  Konkret werden von dem Framework die abstrakte Klasse 
 \family sans
 \shape italic
@@ -4483,7 +7291,45 @@ name "fig:NamespaceExtentionUML"
 \end_layout
 
 \begin_layout Subsection
-Von der XML-Konfiguration zum Spring Bean
+(Java) Erweiterung der Spring Konfiguration
+\end_layout
+
+\begin_layout Standard
+Wie in Abschnitt 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Spring-Erweiterung-mittels_Java-Config"
+
+\end_inset
+
+ beschrieben ist die Java-Konfiguration der 
+\noun on
+SpringContributions
+\noun default
+ über die Implementierung des Interfaces 
+\family sans
+\shape italic
+BeanDefinitionRegistryPostProcessor
+\family default
+\shape default
+ umgesetzt worden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Beschreibung zur Implementierung
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+(XML) Von der Konfiguration zum Spring Bean
 \end_layout
 
 \begin_layout Standard
@@ -4515,7 +7361,7 @@ contributeTo
  (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "lis:SpringContributions:contributeTo"
+reference "lis:SpringContributions-XML:contributeTo"
 
 \end_inset
 
@@ -4534,7 +7380,7 @@ contribute
  (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "lis:SpringContributions:contribute"
+reference "lis:SpringContributions-XML:contribute"
 
 \end_inset
 
@@ -4645,6 +7491,9 @@ name "fig:NamespaceExtentionFlow"
 \end_layout
 
 \begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
 Der 
 \family sans
 \shape italic
@@ -4655,10 +7504,10 @@ ContributionBeanDefinitionDecorator
  in einem 
 \family sans
 \shape italic
-OrderedContribution 
+OrderedContribution-Bean
 \family default
 \shape default
-Objekt abzulegen.
+ abzulegen.
  Innerhalb dieses Objekts werden auch die Parametern des 
 \begin_inset Quotes eld
 \end_inset
@@ -4671,28 +7520,28 @@ constraints
 \begin_inset Quotes eld
 \end_inset
 
- Attributs, zur Festlegung der Position des Beans innerhalb der Contributionlist
-e, abgelegt.
+ Attributs, zur Festlegung der Position des Beans innerhalb der Contribution-Lis
+te, abgelegt.
 \end_layout
 
 \begin_layout Standard
 Anschließend wird das 
 \family sans
 \shape italic
-OrderedContribution
+OrderedContribution-Bean
 \family default
 \shape default
- Objekt als Element zur Contributionliste hinzugefügt und somit innerhalb
- der 
+ als Element zur Contribution-Liste hinzugefügt und somit innerhalb der
+ 
 \family sans
 \shape italic
 OrderedConfigurationFactoryBean
 \family default
 \shape default
  abgelegt.
- Wenn das entsprechende Bean das erste Element ist, dass zur Contributionliste
+ Wenn das entsprechende Bean das erste Element ist, dass zur Contribution-Liste
  hinzugefügt wird, dann muss vor dem Hinzufügen zuerst noch das Bean der
- Contributionliste selbst angelegt und in der 
+ Contribution-Liste selbst angelegt und in der 
 \begin_inset Quotes eld
 \end_inset
 
@@ -4755,7 +7604,7 @@ name "lis:Registrierung-eines-Beans"
 
 \end_inset
 
-Registrierung eines Beans zu einer Contributionliste: Auszug aus dem 
+Registrierung eines Beans zu einer Contribution-Liste: Auszug aus dem 
 \family sans
 \shape italic
 ContributionBeanDefinitionDecorator
@@ -4926,7 +7775,7 @@ Orderer
 \family default
 \shape default
 , die einzelnen Positionierungsangaben der Listen Elemente berücksichtigen
- (sieher Abbildung 
+ (siehe Abbildung 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Contributionliste"
@@ -4937,14 +7786,14 @@ reference "fig:Contributionliste"
 \end_layout
 
 \begin_layout Standard
-Wenn nun ein Bean, das eine Contributionliste benötigt, von der Spring IOC-Regis
-try instanziiert wird, so bedient sich diese der 
+Wenn nun ein Bean, das eine Contribution-Liste benötigt, von der Spring
+ IOC-Registry instanziiert wird, so bedient sich diese der 
 \family sans
 \shape italic
 OrderedConfigurationFactoryBean
 \family default
 \shape default
- um die Contributionliste zu erhalten.
+ um die Contribution-Liste zu erhalten.
 \end_layout
 
 \begin_layout Standard
@@ -4965,7 +7814,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Contributionliste 
+Contribution-Liste 
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:Contributionliste"
@@ -5011,7 +7860,233 @@ name "fig:Contributionliste"
 \end_layout
 
 \begin_layout Subsection
-Anwendungsbeispiel
+(Java) Von der Konfiguration zum Spring Bean
+\end_layout
+
+\begin_layout Standard
+Will man eine Bean zu einer Contribution-Map hinzufügen und dabei als Schlüssele
+lement eine Enumeration verwenden, so kann dies über die Verwendung der
+ optionalen Attribute 
+\family sans
+\shape italic
+keyEnumClass
+\family default
+\shape default
+ und 
+\family sans
+\shape italic
+keyEnumValue
+\family default
+\shape default
+ erreicht werden.
+ Die Verwendung von zwei Attributen ist hier deshalb notwendig, da es nicht
+ möglich ist direkt eine Enumeration in einer Annotation zu referenzieren.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO noch mehr Beschreibung
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:(Java)-Contribution-Map:-Enumeration Key Definition"
+
+\end_inset
+
+(Java) Contribution-Map: Enumeration Key Definition
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+//Hinzufügen eines Key/Value-Paares zu einer Contribution-Map mit einer
+ Enumeration als Schlüssel
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@ContributionMapped(to="myMappedContribution", keyEnumClass=KeyEnum.class,
+ keyEnumValue="keyOne")
+\end_layout
+
+\begin_layout Plain Layout
+
+@Bean(name="enumOneKeyObject")
+\end_layout
+
+\begin_layout Plain Layout
+
+public Object enumOneKeyObject()
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	return new Object();
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+//Die verwendete Enumeration-Klasse mit ihren Werten
+\end_layout
+
+\begin_layout Plain Layout
+
+public enum KeyEnum
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	keyOne,
+\end_layout
+
+\begin_layout Plain Layout
+
+	keyTwo;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Contribution-Bean Identifikation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Contribution-Bean-Identifikation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Woraus wird die Identifikation gebildet (Name + Prefix).
+ Wie kann ein Anwender die Eindeutigkeit der Identifikation sicherstellen?
+ -> Durch die Verwendung des Modulnamen als Prefix in jedem Contributionnamen,
+ kann die Eindeutigkeit der Contibution Identifikation zumindest über Modulgrenz
+en hinweg sichergestellt werden.
+ Innerhalb einer Modulkonfiguration kann man mit ähnlichen Vorgaben ebenfalls
+ Namenskollisionen vermeiden.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+
+\noun on
+SpringContributions
+\noun default
+ Anwendungsbeispiele
+\end_layout
+
+\begin_layout Standard
+In den folgenden Anwendungsbeispielen folgt den Listings mit XML-Konfiguration
+ sogleich ein Listing mit äquivalenter Java-Konfiguration.
+\end_layout
+
+\begin_layout Subsection
+(XML / Java) ValueHolder-Service und sortierte Contribution-Liste
 \end_layout
 
 \begin_layout Standard
@@ -5019,14 +8094,7 @@ Ein Anwendungsbeispiel des
 \noun on
 SpringContributions
 \noun default
- Mechanismus wird in den Listings 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "lis:OrderedContributionTest-Konfiguration"
-
-\end_inset
-
- und 
+ Mechanismus wird in den folgenden drei Listings und 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "lis:OrderedContributionTest-Test"
@@ -5037,20 +8105,39 @@ reference "lis:OrderedContributionTest-Test"
 \end_layout
 
 \begin_layout Standard
-Dabei handelt es sich im ersten Listing um den Inhaltlichen Auszug einer
- Spring Konfiguration, in der ein 
+Dabei handelt es sich in Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:(XML) OrderedContributionTest-Konfiguration"
+
+\end_inset
+
+ um eine XML-Konfiguration einer Contribution-Liste und ihres Konsumenten.
+ In Listing 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "lis:(Java) OrderedContributionTest-Konfiguration"
+
+\end_inset
+
+wird als Gegenüberstellung zur XML-Konfiguration die analoge Java-Konfiguration
+ angegeben.
+\end_layout
+
+\begin_layout Standard
+In dem Beispiel wird ein 
 \family sans
 \shape italic
 ValueHolder
 \family default
 \shape default
- Service als Spring Bean sowie eine 
+ Service als Spring Bean sowie eine
 \family sans
 \shape italic
-OrderedContribution 
+ 
 \family default
 \shape default
-mit dem Namen 
+sortierte Contribution-Liste mit dem Namen 
 \family sans
 \shape italic
 "value-list"
@@ -5063,8 +8150,8 @@ mit dem Namen
 ValueHolder
 \family default
 \shape default
- Service erwartet die Contribution Liste als Konstruktor-Argument.
- Innerhalb der Contributionliste sind drei Strings ("
+ Service erwartet die Contribution-Liste als Konstruktor-Argument.
+ Innerhalb der Contribution-Liste sind drei Strings ("
 \family sans
 \shape italic
 String 1
@@ -5074,12 +8161,6 @@ String 1
 \family sans
 \shape italic
 String 2
-\family default
-\shape default
-", "
-\family sans
-\shape italic
-String 3
 \family default
 \shape default
 ") als Elemente definiert.
@@ -5126,11 +8207,11 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "lis:OrderedContributionTest-Konfiguration"
+name "lis:(XML) OrderedContributionTest-Konfiguration"
 
 \end_inset
 
- Spring Bean und Ordered Contribution Test-Konfiguration
+ (XML) Spring Bean und Sortierte Contribution-Liste Test-Konfiguration
 \end_layout
 
 \end_inset
@@ -5144,6 +8225,7 @@ name "lis:OrderedContributionTest-Konfiguration"
 
 \begin_layout Plain Layout
 
+<!-- (XML) Bean Konfig des Konsumenten -->
 \end_layout
 
 \begin_layout Plain Layout
@@ -5168,11 +8250,16 @@ name "lis:OrderedContributionTest-Konfiguration"
 
 \begin_layout Plain Layout
 
-</bean> 
+</bean>
 \end_layout
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\begin_layout Plain Layout
+
+<!-- (XML) Konfiguration der Contribution-Listen Elemente -->
 \end_layout
 
 \begin_layout Plain Layout
@@ -5182,12 +8269,12 @@ name "lis:OrderedContributionTest-Konfiguration"
 
 \begin_layout Plain Layout
 
-	<ctr:entry name="string3" value="String 3"
+	<ctr:entry name="string2" value="String 2"
 \end_layout
 
 \begin_layout Plain Layout
 
-		constraints="after:string2" />
+		constraints="after:string1" />
 \end_layout
 
 \begin_layout Plain Layout
@@ -5202,17 +8289,156 @@ name "lis:OrderedContributionTest-Konfiguration"
 
 \begin_layout Plain Layout
 
-	<ctr:entry name="string2" value="String 2"
-\end_layout
-
-\begin_layout Plain Layout
-
-		constraints="after:string1,before:string3" />
-\end_layout
-
-\begin_layout Plain Layout
-
 </ctr:contribution>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "lis:(Java) OrderedContributionTest-Konfiguration"
+
+\end_inset
+
+ (Java) Spring Bean und Sortierte Contribution-Liste Test-Konfiguration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// (Java) Bean Konfig des Konsumenten
+\end_layout
+
+\begin_layout Plain Layout
+
+@Bean(name="valueHolder") public ValueHolder valueHolder(OrderedContributionReso
+lver<String> values)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	return new ValueHolder(values.resolve("value-list"));
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// (Java) Konfiguration der Contribution-Listen Elemente
+\end_layout
+
+\begin_layout Plain Layout
+
+@Contribution(to="value-list", constraints="after:string1")
+\end_layout
+
+\begin_layout Plain Layout
+
+@Bean(name="string2") public String string2()
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	return "String 2";
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Contribution(to="value-list", constraints="before:*")
+\end_layout
+
+\begin_layout Plain Layout
+
+@Bean(name="string1") public String string1()
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	return "String 1";
+\end_layout
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -5260,7 +8486,7 @@ Innerhalb des Unit Tests wird die Konfiguration über die Spring Annotation
 \shape default
  als Spring Kontext in den Test mit eingebunden.
  Der Unit Test überprüft dann die richtige Reihenfolge der einzelnen Strings
- innerhalb der Contributionliste.
+ innerhalb der Contribution-Liste.
 \end_layout
 
 \begin_layout Standard
@@ -5321,7 +8547,7 @@ ValueHolder
 
 \begin_layout Plain Layout
 
-//Java-Klasse ValueHolder:
+// Java-Klasse ValueHolder:
 \end_layout
 
 \begin_layout Plain Layout
@@ -5398,7 +8624,7 @@ public class ValueHolder
 
 \begin_layout Plain Layout
 
-//Java-Klasse OrderedContributionIntegrationTest:
+// JUnit Test OrderedContributionIntegrationTest:
 \end_layout
 
 \begin_layout Plain Layout
@@ -5407,7 +8633,23 @@ public class ValueHolder
 
 \begin_layout Plain Layout
 
-@ContextConfiguration("spring-contributions-ordered.xml") 
+// hier wird das XML-Konfigurationsfile angegeben
+\end_layout
+
+\begin_layout Plain Layout
+
+// oder die äquivalente Java-Konfiguration als Klasse
+\end_layout
+
+\begin_layout Plain Layout
+
+// z.B.
+ OrderedContributionIntegrationTestConfiguration.class
+\end_layout
+
+\begin_layout Plain Layout
+
+@ContextConfiguration("classpath:spring-contributions-ordered.xml") 
 \end_layout
 
 \begin_layout Plain Layout
@@ -5427,12 +8669,21 @@ public class OrderedContributionIntegrationTest
 
 \begin_layout Plain Layout
 
-	@Autowired
+	@Inject
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Named("valueHolder")
 \end_layout
 
 \begin_layout Plain Layout
 
 	private ValueHolder stringHolder;
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -5457,7 +8708,7 @@ public class OrderedContributionIntegrationTest
 
 \begin_layout Plain Layout
 
-			is(Arrays.asList("String 1", "String 2", "String 3")));
+			is(Arrays.asList("String 1", "String 2")));
 \end_layout
 
 \begin_layout Plain Layout
@@ -5486,6 +8737,56 @@ public class OrderedContributionIntegrationTest
 
 \begin_layout Standard
 \begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Contributions mehrfach konsumieren
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Contributions-mehrfach-konsumier"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ein großer Vorteil gegenüber des in Tapestry angebotenen Contribution Systems
+ ergibt sich in den 
+\noun on
+SpringContributions 
+\noun default
+aus dem Umstand, dass jede Contribution als eigenes Bean behandelt wird.
+ 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Beschreibung von Anwendungsfällen, Vorteilen mit Codebeispielen
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Natürlich birgt die Möglichkeit der uneingeschränkten Verwendung von Contributio
+ns durch mehrere Konsumenten auch Risiken, auf die in der Verwendung acht
+ gegeben werden muss.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Beschreibung von Problemen und Risiken mit Codebeispielen
+\end_layout
+
 \end_inset
 
 
@@ -5521,6 +8822,13 @@ Strategy
 \end_inset
 
  Service
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Strategy-Service"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5547,14 +8855,43 @@ Strategy
 \begin_inset Quotes erd
 \end_inset
 
- Pattern auf eine sehr inteligente Weise erweitert.
+ Pattern auf eine sehr intelligente Weise erweitert.
  In Tapestry wird die Auswahl der Strategie über Objekttypen gesteuert.
- Das bedeutet, dass immer der Typ des ersten Parameters einer Strategy Methode
- darüber entscheidet, welche Strategie zum Zuge kommt.
+ Das bedeutet, dass immer der Typ des ersten Parameters einer 
+\begin_inset Quotes eld
+\end_inset
+
+Strategy
+\begin_inset Quotes erd
+\end_inset
+
+-Methode darüber entscheidet, welche Strategie zum Zuge kommt.
 \end_layout
 
 \begin_layout Standard
-//TODO
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Erweiterte Beschreibung des Patterns und seiner Anwendung
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Text zum Tapestry Codebeispiel
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5631,6 +8968,15 @@ public interface StrategyBuilder
 }
 \end_layout
 
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+//TODO Vervollständigen des Beispiels
+\end_layout
+
 \end_inset
 
 
@@ -5646,7 +8992,16 @@ public interface StrategyBuilder
 \end_layout
 
 \begin_layout Standard
-//TODO
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Text zum Spring Contributions Codebeispiel
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5672,7 +9027,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset listings
-lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=XML,tabsize=4"
 inline false
 status open
 
@@ -5683,11 +9038,11 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "spring-contributions-strategy-building"
+name "XML:spring-contributions-strategy-building"
 
 \end_inset
 
- Konfiguration einer Strategie in SpringContributions
+ (XML) Konfiguration einer Strategie in SpringContributions
 \end_layout
 
 \end_inset
@@ -5887,88 +9242,258 @@ rsedStringFormatStrategy" />
 \end_layout
 
 \begin_layout Standard
-//TODO
-\end_layout
-
-\begin_layout Subsection
-\begin_inset Quotes eld
+\begin_inset VSpace bigskip
 \end_inset
 
-Chain Of Command
-\begin_inset Quotes erd
-\end_inset
 
- Service
 \end_layout
 
 \begin_layout Standard
-//TODO
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small\sffamily},breaklines=true,language=Java,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "Java:spring-contributions-strategy-building"
+
+\end_inset
+
+ (Java) Konfiguration einer Strategie in SpringContributions
 \end_layout
 
-\begin_layout Subsection
-\begin_inset Quotes eld
 \end_inset
 
-Pipeline
-\begin_inset Quotes erd
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Configuration
+\end_layout
+
+\begin_layout Plain Layout
+
+@EnableAspectJAutoProxy
+\end_layout
+
+\begin_layout Plain Layout
+
+public abstract class StrategyFactoryBeanIntegrationTestConfiguration
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean(name="stringFormatStrategy")
+\end_layout
+
+\begin_layout Plain Layout
+
+	public StrategyFactoryBean strategyCaller(MappedContributionResolver<Map<Class,
+ Strategy>> strategies)
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new StrategyFactoryBean(StringFormatStrategy.class, strategies.resolve("s
+tringFormatStrategies"));
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	@ContributionMapped(to="stringFormatStrategies", keyClass=UpperCase.class)
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean(name="upperCase")
+\end_layout
+
+\begin_layout Plain Layout
+
+	public StringFormatStrategy<UpperCase> upperCase()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new UpperCaseStringFormatStrategy();
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	@ContributionMapped(to="stringFormatStrategies", keyClass=BlankSeparated.class)
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean(name="blankSeparated")
+\end_layout
+
+\begin_layout Plain Layout
+
+	public StringFormatStrategy<BlankSeparated> blankSeparated()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new BlankSeparatedStringFormatStrategy();
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	@ContributionMapped(to="stringFormatStrategies", keyClass=Reversed.class,
+ bean="reversed")
+\end_layout
+
+\begin_layout Plain Layout
+
+	@Bean(name="reversed")
+\end_layout
+
+\begin_layout Plain Layout
+
+	public StringFormatStrategy<Reversed> reversed()
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		return new ReversedStringFormatStrategy();
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
 \end_inset
 
- Service
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-//TODO
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO Anwendungsbeispiel zu der zuvor angelegten Konfiguration als Unit-Test
 \end_layout
 
-\begin_layout Subsection
-\begin_inset Quotes eld
 \end_inset
 
-Shadow
-\begin_inset Quotes erd
-\end_inset
 
- Service
-\end_layout
-
-\begin_layout Standard
-//TODO
 \end_layout
 
 \begin_layout Chapter
-IOC Frameworks
-\end_layout
-
-\begin_layout Section
-Pico Container
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Pico-Container"
-
-\end_inset
-
-
+Vergleich von XML-Konfiguration und Java-Konfiguration
 \end_layout
 
 \begin_layout Standard
-Das Pico Container Framework sieht den IOC Begriff als Zusammenfassung mehrerer
- konkreter Schritte.
- Zum einen die Auflösung bzw.
- Auffindung von Modul/Objekt Abhängigkeiten als Dependency Injection (siehe
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:seperating configuration from use"
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+TODO
+\end_layout
 
 \end_inset
 
- ), des weiteren die Konfiguration der Abhängigkeiten, als auch die Verwaltung
- des Lebenszyklus der Abhängigkeiten.
+
 \end_layout
 
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
+btprint "btPrintAll"
 bibfiles "bibtex/literatur"
 options "bibtotoc,plain"
 
