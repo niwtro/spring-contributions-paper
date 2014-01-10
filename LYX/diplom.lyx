@@ -1170,7 +1170,7 @@ key "Sweet:1985"
 
 \end_inset
 
- existierte schon seit 1985 ein weiterer Begriff für das selbe Prinzip auf
+ existierte schon seit 1985 ein weiterer Begriff für dasselbe Prinzip auf
  den auch Erich Gamma et.al.
  in ihrem bekannten Buch zu 
 \begin_inset Quotes eld
@@ -2985,7 +2985,7 @@ MyServiceImpl
 \family default
 \shape default
  als Bean.
- In beiden Varianten wird das selbe Bean konfiguriert.
+ In beiden Varianten wird dasselbe Bean konfiguriert.
  Um die jeweilige Konfiguration zur Anwendung zu bringen, muss sie nur dem
  
 \shape italic
@@ -3390,7 +3390,7 @@ Spring
  Java-Konfiguration, durch den Umstand, dass diese ebenfalls in Java-Klassen
  durchgeführt wird, wohl etwas einfacher mit der Tapestry-Variante verglichen
  werden.
- Das Selbe gilt auch für alle späteren Abschnitte.
+ Dasselbe gilt auch für alle späteren Abschnitte.
 \end_layout
 
 \begin_layout Section
@@ -3920,9 +3920,9 @@ Tapestry-Contributions
 \begin_layout Standard
 Die meisten Services können die Dienste die sie anbieten nicht komplett
  selbstständig erledigen.
- Also haben Services oft Abhängigkeiten auf andere Services.
- Es gibt viele Fälle in denen eine solche Abhängigkeit nicht nur eine 1:1
- Beziehung darstellt.
+ Also stehen Services oft in Abhängigkeit zu anderen Services.
+ Es gibt viele Fälle in denen eine solche Abhängigkeit nicht nur in einer
+ 1:1 Beziehung besteht.
  Es kommt vor, dass sich ein Service einer ganzen Liste an Implementierungen
  eines anderen Serviceinterfaces bedient, um seine Aufgaben zu lösen.
  In einer herkömmlichen Java Anwendung würde diese Liste, bei der Initialisierun
@@ -3964,7 +3964,7 @@ contribute
 \begin_inset Quotes erd
 \end_inset
 
- gefolgt von dem Namen des Services für den die Konfiguration und somit
+, gefolgt von dem Namen des Services, für den die Konfiguration und somit
  die Liste gedacht ist (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3979,7 +3979,7 @@ reference "tapestry-contribute"
 
 \begin_layout Standard
 Ein großer Vorteil, den diese Art der Servicekonfiguration durch die Indirektion
- über den IOC-Container mit sich bringt, ist die Möglichkeit, der Liste,
+ über den IOC-Container mit sich bringt, ist die Möglichkeit jener Liste,
  derer sich der Service bedienen soll, modulübergreifend weitere Implementierung
 en hinzuzufügen.
 \end_layout
@@ -4159,7 +4159,7 @@ Der Konfigurationsmechanismus im Tapestry-Framework unterstützt aber nicht
 org.apache.tapestry5.ioc.Configuration<T>
 \family default
 \shape default
- als Servicecontribution, sondern bietet noch weitere komplexere Übergabeformen.
+ als Servicecontribution, sondern bietet noch weitere, komplexere Übergabeformen.
 \end_layout
 
 \begin_layout Section
@@ -4448,7 +4448,7 @@ Es lassen sich aber auch Anwendungsfälle finden, in denen die Datenstruktur
  In manchen Fällen ist es notwendig, Services anhand von Schlüsselelementen
  zu identifizieren.
  Für diese Zuordnung kann eine Listenstruktur nicht mehr verwendet werden.
- Sehr wohl aber lässt sich eine derartige Anforderung in Java durch den
+ Sehr wohl lässt sich aber eine derartige Anforderung in Java durch den
  Objekttyp einer 
 \family sans
 \shape italic
@@ -4671,14 +4671,14 @@ Spring
  eigenständige Konfigurationssyntax vor.
  Der Mechanismus läuft dabei folgendermaßen ab.
  Sobald der IOC-Container ein Bean instanziieren muss, dessen Konstruktor
- eine Liste von Objekten erwartet, die das selbe Interface implementieren,
+ eine Liste von Objekten erwartet, die dasselbe Interface implementieren,
  werden alle im IOC-Container befindlichen Beans auf die diese Eigenschaft
  zutrifft, in eine Liste verpackt und dem konsumierenden Bean bei der Erstellung
  übergeben.
 \end_layout
 
 \begin_layout Standard
-Das selbe Prinzip wird auch für Map-Parameter angewandt, wobei die einzelnen
+Dasselbe Prinzip wird auch für Map-Parameter angewandt, wobei die einzelnen
  Beans nun als Werte in einer Map zusammengefasst werden.
  Als Schlüssel wird jeweils der in der Konfiguration festgelegte Name des
  Beans herangezogen.
@@ -5063,9 +5063,9 @@ Umsetzung als Spring-Erweiterung
 
 \begin_layout Standard
 Das Spring-Framework ist selbst aus Komponenten aufgebaut.
- Aus diesem Grund bietet das Framework auch die einfache Möglichkeit, neue
- Komponenten in das Framework zu integrieren.
- Dies hat sowohl Vorteile für die interne Weiterentwicklung, wie auch für
+ Aus diesem Grund bietet es auch die einfache Möglichkeit, neue Komponenten
+ in das Framework zu integrieren.
+ Dies hat sowohl Vorteile für die interne Weiterentwicklung, als auch für
  die Entwicklung von Erweiterungen durch Außenstehende.
  Um die aus dem Tapestry-Framework bekannte Contribution-Funktionalitäten
  auch in 
@@ -5195,7 +5195,7 @@ Spring
 \noun on
 SpringContributions
 \noun default
- mit einbezogen und konnte dafür genutzt werden, durch eine kleine Abweichung
+ miteinbezogen und konnte dazu genutzt werden, durch eine kleine Abweichung
  vom Vorbild des Tapestry Contribution-Mechanismus, einen Mehrwert in den
  Verwendungsmöglichkeiten zu gewinnen.
 \end_layout
@@ -5216,13 +5216,13 @@ ement und somit als eigenes Objekt bzw.
 \shape italic
 Spring
 \shape default
- eine Contribution, die ja als eigenes und über den eindeutigen Namen, eindeutig
+ eine Contribution, die ja als eigenes und über den eindeutigen Namen eindeutig
  referenzierbares Objekt existiert, nicht nur von einem bestimmten, sondern
  von vielen beliebigen Konsumenten verwendet werden kann.
- Ist ein Contribution-Bean also einmal definiert, so kann jedes Bean, dass
- sich nun dieser Contribution anschließen, oder sich ihrer bedienen will,
+ Ist ein Contribution-Bean also einmal definiert, so kann jedes Bean das
+ sich nun dieser Contribution anschließen oder sich ihrer bedienen will,
  über deren eindeutigen Namen das tatsächliche Bean referenzieren.
- Dieser Vorteil und die ebenso zu beachtenden Risiken bei der mehrfachen
+ Dieser Vorteil, aber auch die zu beachtenden Risiken bei der mehrfachen
  Verwendung einer Contributions, wird im Unterabschnitt 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5234,7 +5234,7 @@ reference "sub:Contributions-mehrfach-konsumier"
 \end_layout
 
 \begin_layout Standard
-Der eben erwähnten Mehrwert in der Verwendung bringt aber auch gleichzeitig
+Der eben erwähnte Mehrwert in der Verwendung bringt aber auch gleichzeitig
  neue Herausforderungen für den Anwender.
  Dieser ist nämlich selbst für die Vergabe der Namen für Contributions verantwor
 tlich und muss sich deshalb selbst um deren Eindeutigkeit kümmern.
@@ -5264,7 +5264,7 @@ SpringContributions
 
 \begin_layout Standard
 Ein weiterer, konzeptioneller Unterschied zur Tapestry-Vorlage betrifft
- die Abbildung der Listenform eine Contribution.
+ die Abbildung der Listenform einer Contribution.
  In den 
 \noun on
 SpringContributions
@@ -5272,7 +5272,7 @@ SpringContributions
  wird nicht mehr extra zwischen unsortierten und sortierten Listen unterschieden.
  Dieser Weg wurde gewählt, um die Menge der unterschiedlichen Konfigurationselem
 ente möglichst gering zu halten.
- Es wird also nur mehr ein Konfigurationselement für eine Contribution-Liste
+ Es wird also nur noch ein Konfigurationselement für eine Contribution-Liste
  benötigt, egal ob diese sortiert oder unsortiert sein soll.
  Die Angabe einer Reihenfolge der Listenelemente wird über eine optionale
  Sortierungsangabe ermöglicht.
@@ -5391,7 +5391,7 @@ reference "sub:XML--und-Java-Konfiguration-im-Detail"
 
  genauer beschrieben werden.
  Dabei werden die zur Verwendung stehenden XML-Elemente und XML-Attribute,
- ausgehend von ihrer Schemadefinition und im Hinblick auf ihre Anwendung
+ ausgehend von ihrer Schemadefinition und im Hinblick auf ihre Anwendung,
  eingeführt.
 \end_layout
 
@@ -5463,7 +5463,7 @@ name "par:Eingriff-während-der-Registrierung_Variante-1"
 
 \begin_layout Standard
 Ebenso wie ein XML-Konfigurationsfile muss auch eine Spring Java-Konfigurationsk
-lasse zu aller erst geparst werden.
+lasse zuallererst geparst werden.
  Danach werden alle Annotationen (
 \family sans
 @PropertySource
@@ -5661,9 +5661,9 @@ SpringContributions
  Hier ist es dann natürlich möglich, alle bereits bestehenden Beandefinitionen
  in der Abarbeitung der Contribution-Konfiguration zu berücksichtigen und
  zu referenzieren.
- Man hat hier also den Vorteil, sich nur um die Cotribution-Bean Erstellung,
- und nicht um die normale Beankonfiguration Erstellung selbst kümmern zu
- müssen, da diese ja bereits im Spring-Kern erstellt wurden.
+ Man hat hier also den Vorteil, sich selbst nur um die Cotribution-Bean
+ Erstellung und nicht um die normale Beankonfiguration Erstellung kümmern
+ zu müssen, da diese ja bereits im Spring-Kern erstellt wurden.
 \end_layout
 
 \begin_layout Standard
@@ -5791,8 +5791,8 @@ ConfigurationPlugin
 \family default
  Annotation an eine eigene Annotation gebunden werden.
  Über die eigene Annotation konnte dann die neue Funktionalität in jeder
- normalen Konfiguration-Klasse mit eingebunden werden.
- Diese Art der Erweiterung war ähnlich zur zuvor vorgestellten Variante
+ normalen Konfigurationsklasse mit eingebunden werden.
+ Diese Art der Erweiterung war ähnlich der zuvor vorgestellten Variante
  1 und wurde dann auch nicht in das Kernprojekt von 
 \shape italic
 Spring
@@ -5819,8 +5819,8 @@ Spring
  nicht zur Wiederverwendung eignet, hätte hier all zu viel recht komplexer
  Code dupliziert werden müssen.
  Dieses Unterfangen wäre nicht nur besonders fehleranfällig gewesen, sondern
- hätte auch besonders viel Wartungsarbeit erfordert, wenn sich im Zuge von
- Versionsänderungen die diesbezügliche Logik im Spring-Framework geändert
+ hätte auch besonders intensive Wartungsarbeit erfordert, wenn sich im Zuge
+ von Versionsänderungen die diesbezügliche Logik im Spring-Framework geändert
  hätte.
  Demzufolge wäre das gesamte 
 \noun on
@@ -5848,12 +5848,12 @@ reference "sub:(Java)-Contributions-Referenzier_Resolver-Services"
 \end_inset
 
 ) realisiert werden.
- Da aber die Umsetzung dieser Services kein großer Aufwand ist, und die
- Verwendung von derartigen Services das Benutzen der Java-Konfiguration
- auch nicht erheblich komplexer gestaltet, gibt es also auch deshalb keinen
- triftigen Grund für die Wahl der ersten Variante.
- Deshalb ist die Wahl bei der Umsetzung auf die Variante 2, und damit auf
- das Abarbeiten der Contribution-Konfiguration über das Postprocessing gefallen.
+ Da aber die Umsetzung dieser Services keinen großen Aufwand bedeutet, und
+ die Verwendung von derartigen Services das Benutzen der Java-Konfiguration
+ auch nicht erheblich komplexer gestaltet, gibt es auch deshalb keinen triftigen
+ Grund, der ersten Variante den Vorzug zu geben.
+ Deshalb fiel die Wahl bei der Umsetzung auf die Variante 2, und damit auf
+ das Abarbeiten der Contribution-Konfiguration über das Postprocessing.
 \end_layout
 
 \begin_layout Subparagraph
@@ -5862,8 +5862,8 @@ Probleme in der Umsetzung:
 
 \begin_layout Standard
 Bei der Konzeption der Contribution-Map Funktionalität für die Java-Konfiguratio
-n ergaben sich einige Probleme, exakt dasselbe Set an Konfigurationsmöglichkeite
-n zur Verfügung zu stellen, wie es bereits in der XML-Variante umgesetzt
+n ergaben sich einige Probleme dabei, exakt dasselbe Set an Konfigurationsmöglic
+hkeiten zur Verfügung zu stellen, wie es bereits in der XML-Variante umgesetzt
  worden war.
  In 
 \shape italic
@@ -5891,13 +5891,10 @@ Tapestry
  Variablen zuzugreifen.
  Dabei kann dann natürlich auch die Syntaxprüfung des Compilers genutzt
  werden.
- Verwendet man jedoch, wie es in 
-\shape italic
-Spring
-\shape default
- der gängige Weg der Java-Konfiguration ist, hauptsächlich Annotationen
- als Konfigurations-Metadaten, dann fällt die Unterstützung der Syntaxprüfung
- durch den Compiler, in Zusammenhang mit verwendeten Objekten bzw.
+ Verwendet man jedoch den in Spring gängigen Weg der Java-Konfiguration
+ und benutzt hauptsächlich Annotationen als Konfigurations-Metadaten, dann
+ fällt die Unterstützung der Syntaxprüfung durch den Compiler, in Zusammenhang
+ mit verwendeten Objekten bzw.
  Variablen, dieser Entscheidung zum Opfer.
  Das liegt daran, dass es in Annotationen nicht möglich ist, Objektreferenzen
  als Parameter anzugeben.
@@ -5920,9 +5917,9 @@ se Objekte als Schlüsselelement einer Contribution-Map verwenden zu können.
 Da Enumerationen sich, seit ihrer Einführung in Java, einer sehr hohen Beliebthe
 it erfreuen, war es wichtig die Möglichkeiten der Verwendung von Enumerationen
  als Schlüssel der Contribution-Map umzusetzen.
- Dies konnte leider, wieder auf Grund der Eigenschaften von Annotationen,
- nur über die Verwendung von zwei Parametern Enumeration-Klasse und Enumeration-
-Wert verwirklicht werden (siehe Listing 
+ Dies konnte leider, wieder aufgrund der Eigenschaften von Annotationen,
+ nur über die Verwendung der zwei Parameter Enumeration-Klasse und Enumeration-W
+ert verwirklicht werden (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "lis:(Java)-Contribution-Map:-Enumeration Key Definition"
@@ -5965,8 +5962,8 @@ name "sub:XML--und-Java-Konfiguration-im-Detail"
 \begin_layout Standard
 In diesem Abschnitt werden die einzelnen Konfigurationselemente der beiden
  Konfigurationsarten (XML, Java) im Bezug auf ihre Anwendung beschrieben.
- Dabei wird abwechslungsweise, für jede Art von Konfigurationselement, zuerst
- die XML-Variante und darauf folgend die Java-Variante erläutert.
+ Dabei wird abwechslungsweise, für jede Art von Konfiguration, zuerst die
+ XML-Variante und darauf folgend die Java-Variante erläutert.
 \end_layout
 
 \begin_layout Subsection
@@ -6055,7 +6052,7 @@ name
  der Name des zu verwendenden Contribution-Bean angegeben wird.
  Beide XML-Elemente können nun an allen möglichen Stellen, also z.B.
  innerhalb einer Konstruktor Definition oder auch in einer Setter Definition
- eines Beans als Referenzierung auf das Contribution-Bean verwendet werden
+ eines Beans, als Referenzierung auf das Contribution-Bean verwendet werden
  (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -6442,10 +6439,10 @@ MappedContributionResolver
 \shape default
 ) implementiert, mit deren Hilfe es leicht möglich ist, ein Contribution-Objekt,
  nur durch die Angabe des Contribution-Namen, zu erhalten.
- Die Notwendigkeit für diese beiden Services kommt daher, da die Java-Konfiguati
-on der 
+ Die Notwendigkeit für diese beiden Services resultiert daraus, dass die
+ Java-Konfiguation der 
 \noun on
-SpringContributions,
+SpringContributions
 \noun default
  in ihrer aktuellen Umsetzung (siehe Abschnitt 
 \begin_inset CommandInset ref
@@ -6454,7 +6451,7 @@ reference "par:Java-Konfig-Variante2"
 
 \end_inset
 
-), erst nach der Standard-Beankonfiguration durchgeführt wird.
+) erst nach der Standard-Beankonfiguration durchgeführt wird.
  Zur Abarbeitungszeit der Standard-Beankonfiguration stehen aber noch keine
  Contribution-Objekte bereit und die Abhängigkeiten von Beans auf Contribution-O
 bjeke können vom IOC-Container noch nicht aufgelöst werden.
@@ -6659,8 +6656,8 @@ Würde man also in einer Beankonfiguration direkt auf ein Contribution-Objekt
  umgangen werden.
  In der XML-Konfiguration werden die beiden Services nicht benötigt, da
  diese gleichzeitig mit der normalen Spring XML-Konfiguration verarbeitet
- wird und somit Contribution-Objekte wie Beans in der selben Phase, so zu
- sagen 
+ werden und somit Contribution-Objekte wie Beans in der selben Phase, so
+ zu sagen 
 \begin_inset Quotes eld
 \end_inset
 
@@ -6718,8 +6715,8 @@ reference "sub:Contribution-Bean-Identifikation"
  laden.
  Diese Aufgabe wird einem ebenfalls durch die beiden Resolver Services abgenomme
 n.
- Die Verwendung des Namenspräfix ist somit für den Benutzer in der Vergabe
- als auch in der Verwendung transparent.
+ Die Verwendung des Namenspräfix ist somit für den Benutzer sowohl in der
+ Vergabe als auch in der Verwendung transparent.
 \end_layout
 
 \begin_layout Subsection
@@ -8901,7 +8898,7 @@ reference "lis:(Java)-Contribution-Map:-Enumeration Key Definition"
 
 \begin_layout Standard
 Die Verwendung von zwei Attributen ist hier deshalb notwendig, da es nicht
- möglich ist direkt einen Enumeration-Wert in einer Annotation zu referenzieren.
+ möglich ist, direkt einen Enumeration-Wert in einer Annotation zu referenzieren.
  Diese Art der Umsetzung ergibt sich aus der Entscheidung für die Verwendung
  von Annotationen zur Angabe der Konfigurations-Metadaten.
  Auf diese Weise entfällt zwar der mögliche Vorteil einer Syntaxprüfung
@@ -9527,7 +9524,7 @@ Dieser Postprozessor registriert, nach dem
 \shape italic
 Spring
 \shape default
- eigenen Initialisieren der Beans, alle in Konfiguration-Klassen definierten
+ eigenen Initialisieren der Beans, alle in Konfigurationsklassen definierten
  Contributions.
  Damit der Postprozessor beim Erstellen des IOC-Containers vom Framework
  automatisch verwendet wird, muss dieser selbst als Service-Bean definiert
@@ -9536,7 +9533,7 @@ Spring
 \noun on
 SpringContributions
 \noun default
- Basiskonfiguration-Klasse (siehe Listing 
+ Basiskonfigurationsklasse (siehe Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "lis:SpringContributions-Java:EnableContributions-Annotation"
@@ -9550,7 +9547,7 @@ AnnotationContributionConfig
 \family default
 \shape default
 .
- In dieser Konfiguration-Klasse werden auch die beiden übrigen, notwendigen
+ In dieser Konfigurationsklasse werden auch die beiden übrigen, notwendigen
  Services 
 \family sans
 \shape italic
@@ -9613,13 +9610,13 @@ Möchte man nun die
 \noun on
 SpringContributions
 \noun default
- Funktionalität in einer Konfiguration-Klasse verwenden, so würde es nun
- genügen, die Basiskonfiguration-Klasse z.B.
+ Funktionalität in einer Konfigurationsklasse verwenden, so würde es nun
+ genügen, die Basiskonfigurationsklasse z.B.
  über die Annotation 
 \family sans
 @Import
 \family default
- in einer eigenen Konfiguration-Klasse mit einzubinden.
+ in einer eigenen Konfigurationsklasse mit einzubinden.
  Um einen eleganteren und 
 \shape italic
 Spring
@@ -9657,7 +9654,7 @@ Aktivierung der
 \noun on
 SpringContributions
 \noun default
- in Java Konfiguration-Klassen
+ in Java Konfigurationsklassen
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Zur-Verfügung-stellen-von-Java-Contribution"
@@ -9672,7 +9669,7 @@ Will man die
 \noun on
 SpringContributions
 \noun default
- Funktionalität in Java Konfiguration-Klassen verwenden, so müssen alle
+ Funktionalität in Java Konfigurationsklassen verwenden, so müssen alle
  notwendigen Services natürlich selbst als Beans innerhalb des Spring Applicatio
 ncontext zur Verfügung stehen.
  Dafür sind alle nötigen Dienste wie der 
@@ -9682,7 +9679,7 @@ AnnotationContributionPostProcessor
 \family default
 \shape default
  und die beiden Resolver Services in einer Basis\SpecialChar \-
-konfiguration-Klasse als
+konfigurationsklasse als
  Beans definiert.
  Zusätzlich wird ein eigener 
 \family sans
@@ -9752,7 +9749,7 @@ Java
 \noun on
 ) 
 \noun default
-Basis Konfiguration-Klasse
+Basis Konfigurationsklasse
 \end_layout
 
 \end_inset
@@ -9898,7 +9895,7 @@ Verwendet man nun diese Annotation auf Klassenebene in einer Java-Konfiguration,
 SpringContributions
 \noun default
  Java-Konfiguration zur Verfügung und können somit innerhalb der eigenen
- Konfiguration-Klasse genutzt werden.
+ Konfigurationsklasse genutzt werden.
  Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -9906,7 +9903,7 @@ reference "lis:SpringContributions-Java:EnableContributions-Annotation"
 
 \end_inset
 
- zeigt die Basiskonfiguration-Klasse der 
+ zeigt die Basiskonfigurationsklasse der 
 \noun on
 SpringContributions
 \noun default
@@ -10166,7 +10163,7 @@ reference "lis:SpringContributions-Java:EnableContributions-Annotation-2"
 \noun on
 SpringContributions
 \noun default
- Funktionalität in der Spring Konfiguration-Klasse aktiviert werden kann.
+ Funktionalität in der Spring Konfigurationsklasse aktiviert werden kann.
  Die Klassen aus Listings 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -10238,11 +10235,7 @@ name "tab:Gegenüberstellung-von-XML-und-Java"
 
 \end_inset
 
-Gegenüberstellung von 
-\noun on
-SpringContributions
-\noun default
- XML- / Java-Konfigurationschlüsselwörtern
+Gegenüberstellung von XML- / Java-Konfigurationschlüsselwörtern
 \end_layout
 
 \end_inset
@@ -11193,7 +11186,7 @@ reference "par:XML-Element-mapped-contribution:"
 
 \end_inset
 
-), wurde das selbe Interface in der Klasse 
+), wurde dasselbe Interface in der Klasse 
 \family sans
 \shape italic
 MappedContributionBeanDefinitionParser
@@ -11998,7 +11991,7 @@ postProcessBeanFactory,
 @Contribution
 \family default
  ausgezeichnet sind.
- In derartigen Konfiguration-Klassen sind somit Beans definiert, die zu
+ In derartigen Konfigurationsklassen sind somit Beans definiert, die zu
  einer Contribution-Liste hinzugefügt werden sollen.
  Die Abarbeitung der Annotation ist ebenso in Listing 
 \begin_inset CommandInset ref
@@ -15662,11 +15655,12 @@ Die Synergien der beiden Frameworks werden durch den Einsatz der
 SpringContributions
 \noun default
  in der Porsche Informatik bereits seit zwei Jahren produktiv genutzt.
- Innerhalb einer B2B Webapplikation zum Gebrauchtwagenverkauf kommt hier
- die Version 1.1 der 
+ Die Version 1.1 der 
 \noun on
 SpringContributions
 \noun default
+ kommt hier innerhalb einer B2B Webapplikation zum Gebrauchtwagenverkauf,
+ in einer Verrechnungssoftware und in der Neuentwicklung eines Händlersystems
  zu Einsatz.
  In dieser Version ist bereits die komplette XML-Konfiguration inklusive
  der 
