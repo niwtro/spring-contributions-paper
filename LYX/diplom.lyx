@@ -104,14 +104,7 @@ Masterarbeit
 \series bold
 \shape smallcaps
 \size largest
-\begin_inset Quotes eld
-\end_inset
-
 Contribution Funktionalität
-\begin_inset Quotes erd
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -176,7 +169,7 @@ Ortwin Probst
 
 \shape smallcaps
 \size large
-Eingereicht bei und betreut durch
+Betreuer
 \end_layout
 
 \begin_layout Standard
@@ -391,12 +384,12 @@ Der theoretische Teil der Arbeit soll sich, ausgehend von einer Betrachtung
  zu modularem Softwaredesign im Bereich von Java Enterprise Anwendungen,
  genauer mit den zur Verfügung stehenden Techniken für Modulare Entwicklung
  auseinandersetzen.
- Dabei soll einerseits die klassische IOC Technik der 
+ Dabei wird einerseits die klassische IOC Technik der 
 \shape italic
 Dependency Injection
 \shape default
 , sowie auch die Möglichkeit der Contributions und deren Nutzen erklärt
- und gezeigt werden.
+ und gezeigt.
  Im Detail wird dabei auf die IOC-Konfiguration der beiden Frameworks 
 \shape italic
 Tapestry
@@ -405,7 +398,7 @@ Tapestry
 \shape italic
 Spring
 \shape default
- eingegangen werden.
+ eingegangen.
 \end_layout
 
 \begin_layout Section*
@@ -609,7 +602,7 @@ Software Modul bzw.
 Der Vergleich mit Komponenten aus der Autoindustrie lässt vielleicht einen
  intuitiven Begriff davon entstehen, was eine Komponente bzw.
  ein Modul in der Softwareentwicklung sein kann.
- Um bei diesem Kernbegriff und Ausgangspunkt meiner Arbeit, nicht nur eine
+ Um bei diesem Kernbegriff und Ausgangspunkt der Arbeit, nicht nur eine
  intuitives Verständnis vorauszusetzen, folgt hier eine Definition des Begriffes.
 \end_layout
 
@@ -699,8 +692,9 @@ Da der Kontext in dem wir uns hier befinden die objektorientierte Programmierung
 Soll ein Service nicht nur innerhalb eines Moduls, sondern auch über Modulgrenze
 n hinweg, zur Verfügung gestellt werden, so muss natürlich die Interface
  Definition für andere Module sichtbar sein.
- Zur Darstellung der Verwendungsbeziehung eines Service, werde ich die Begriffe
- Service Provider (Service) und Service Consumer (Konsument) verwenden.
+ Zur Darstellung der Verwendungsbeziehung eines Service, werden im Folgenden
+ die Begriffe Service Provider (Service) und Service Consumer (Konsument)
+ verwendet.
 \end_layout
 
 \begin_layout Subsection
@@ -862,7 +856,7 @@ erung unabhängig zu halten.
  Implementierung einzelner Komponenten hat, möglich mehrere Softwarekomponente
  zu einer Anwendung zu kombinieren.
  Wie die lose Kopplung auch zu einer Erleichterung beim Testen von Komponenten
- führt, wird in Abschnitt 
+ führt wird in Abschnitt 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Testability-durch-IOC"
@@ -950,8 +944,8 @@ Dieses Problem kann durch Konfigurationsmechanismen gelöst werden.
 \end_layout
 
 \begin_layout Standard
-Es gibt verschiedenste Ansätze, um die Konfiguration möglichst elegant zu
- lösen.
+Es gibt verschiedenste Ansätze zur Realisierung dieser eigenständigen Konfigurat
+ion.
  Einige davon werden im Abschnitt 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1317,7 +1311,7 @@ name "fig:Meilensteine-des-IOC"
 
 \begin_inset Graphics
 	filename pics/IOC Timeline.eps
-	scale 50
+	scale 65
 
 \end_inset
 
@@ -1377,7 +1371,7 @@ Dieses Prinzip der externen Konfiguration des Programmverhaltens und der
  angewandt werden.
  Ein Modul, wie zum Beispiel ein Verrechnungsmodul, kapselt einen bestimmten
  Fachlichen Aspekt und die dazu bereitgestellte Funktionalität (Rechnungserstell
-ung, Stornierung, ...).
+ung, Stornierung, etc.).
  Das konkrete Verhalten im jeweiligen Anwendungskontext des Moduls, muss
  jedoch von eben diesem Anwendungskontext als Konfiguration bereitgestellt
  werden.
@@ -1467,6 +1461,31 @@ Injection Pattern
 .
 \end_layout
 
+\begin_layout Paragraph
+Konstruktor-Injection
+\end_layout
+
+\begin_layout Standard
+Bei dieser Form von Injektion werden alle nötigen Plugins über den Konstruktor
+ des Consumer injiziert.
+ Alle Plugins werden hier also schon bei der Erstellung des Consumer benötigt.
+ Daraus ergeben sich in der Praxis oftmals Probleme (z.B.
+ Abhängigkeits-Zyklus), für deren Lösung moderne IOC-Frameworks verschiedene
+ Wege (z.B.
+ Lazy Loading, Proxying) anbieten.
+ Für den Assembler ist es hier wichtig einen bestimmten Konstruktor für
+ den Injizierungsvorgang zur Verfügung zu haben.
+ Die Auswahl des Konstruktors ist hier ein wichtiges zu lösendes Problem
+ und kann auf unterschiedliche Arten erfolgen (siehe Absatz 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "par:Annotation-Injection"
+
+\end_inset
+
+).
+\end_layout
+
 \begin_layout Standard
 \begin_inset Float figure
 placement H
@@ -1519,31 +1538,6 @@ name "fig:Dependency Injection"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Paragraph
-Konstruktor-Injection
-\end_layout
-
-\begin_layout Standard
-Bei dieser Form von Injektion werden alle nötigen Plugins über den Konstruktor
- des Consumer injiziert.
- Alle Plugins werden hier also schon bei der Erstellung des Consumer benötigt.
- Daraus ergeben sich in der Praxis oftmals Probleme (z.B.
- Abhängigkeits-Zyklus), für deren Lösung moderne IOC-Frameworks verschiedene
- Wege (z.B.
- Lazy Loading, Proxying) anbieten.
- Für den Assembler ist es hier wichtig einen bestimmten Konstruktor für
- den Injizierungsvorgang zur Verfügung zu haben.
- Die Auswahl des Konstruktors ist hier ein wichtiges zu lösendes Problem
- und kann auf unterschiedliche Arten erfolgen (siehe Absatz 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "par:Annotation-Injection"
-
-\end_inset
-
-).
 \end_layout
 
 \begin_layout Paragraph
@@ -2664,9 +2658,9 @@ Apache Tapestry
 Oracle CDI
 \shape default
 .
- Manche dieser IOC-Frameworks sind sehr spezialisiert, wie z.B.
- das Tapestry-Framework rein auf die Entwicklung von Webanwendungen ausgerichtet
- ist.
+ Manche dieser IOC-Frameworks sind sehr spezialisiert.
+ So ist z.B.
+ das Tapestry-Framework rein auf die Entwicklung von Webanwendungen ausgerichtet.
 \end_layout
 
 \begin_layout Standard
@@ -2786,6 +2780,10 @@ org.springframework.beans.factory.BeanFactory
 \shape default
  repräsentiert den 
 \shape italic
+
+\begin_inset Newline linebreak
+\end_inset
+
 Spring
 \shape default
  IOC-Container.
@@ -2846,7 +2844,7 @@ name "fig:Spring-IOC-Konfiguration"
 
 \begin_inset Graphics
 	filename pics/container-magic.png
-	scale 60
+	scale 59
 
 \end_inset
 
@@ -2900,6 +2898,10 @@ Spring
  bietet verschiedenste Implementierungen des 
 \family sans
 \shape italic
+
+\begin_inset Newline linebreak
+\end_inset
+
 FactoryBean
 \family default
 \shape default
@@ -5483,7 +5485,7 @@ lasse zuallererst geparst werden.
 \series default
 @Bean
 \family default
-, ...
+, etc.
  ) und deren Metadaten in einer festen Reihenfolge abgearbeitet.
  Jeder Schritt in dieser Abarbeitungskette behandelt eine ganz bestimmte
  Annotation und den zugehörigen Konfigurationscode.
@@ -8898,7 +8900,7 @@ reference "lis:(Java)-Contribution-Map:-Enumeration Key Definition"
 
 \begin_layout Standard
 Die Verwendung von zwei Attributen ist hier deshalb notwendig, da es nicht
- möglich ist, direkt einen Enumeration-Wert in einer Annotation zu referenzieren.
+ möglich ist direkt einen Enumeration-Wert in einer Annotation zu referenzieren.
  Diese Art der Umsetzung ergibt sich aus der Entscheidung für die Verwendung
  von Annotationen zur Angabe der Konfigurations-Metadaten.
  Auf diese Weise entfällt zwar der mögliche Vorteil einer Syntaxprüfung
@@ -9052,8 +9054,9 @@ In den letzten Abschnitten wurden die Anwendungsmöglichkeiten der
 \noun on
 SpringContributions
 \noun default
- gezeigt, in diesem Abschnitt soll nun in drei Teilen ein Einblick in die
- Implementierung des Moduls gegeben werden.
+ gezeigt.
+ In diesem Abschnitt soll nun in drei Teilen ein Einblick in die Implementierung
+ des Moduls gegeben werden.
 \end_layout
 
 \begin_layout Standard
@@ -9111,9 +9114,9 @@ SpringContributions
 \shape italic
 Spring
 \shape default
- bietet von Haus aus eine Möglichkeit zur Erweiterung seines XML-Konfigurations\SpecialChar \-
-m
-echanismus.
+ bietet grundsätzlich eine Möglichkeit zur Erweiterung seines XML-Konfigurations\SpecialChar \-
+
+mechanismus.
  Konkret werden von dem Framework die abstrakte Klasse 
 \family sans
 \shape italic
@@ -9611,10 +9614,10 @@ Möchte man nun die
 SpringContributions
 \noun default
  Funktionalität in einer Konfigurationsklasse verwenden, so würde es nun
- genügen, die Basiskonfigurationsklasse z.B.
+ genügen, die Basiskonfigurationsklasse, z.B.
  über die Annotation 
 \family sans
-@Import
+@Import,
 \family default
  in einer eigenen Konfigurationsklasse mit einzubinden.
  Um einen eleganteren und 
@@ -9639,7 +9642,7 @@ reference "sub:Zur-Verfügung-stellen-von-Java-Contribution"
 \end_inset
 
 .
- Einen Überblick zu den eben erwähnten Klasse gibt Listing 
+ Einen Überblick zu den eben erwähnten Klassen gibt Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:ExtendingSpringKonfiguration_JAVA"
@@ -9671,14 +9674,14 @@ SpringContributions
 \noun default
  Funktionalität in Java Konfigurationsklassen verwenden, so müssen alle
  notwendigen Services natürlich selbst als Beans innerhalb des Spring Applicatio
-ncontext zur Verfügung stehen.
- Dafür sind alle nötigen Dienste wie der 
+ncontextes zur Verfügung stehen.
+ Dafür sind alle nötigen Dienste, wie der 
 \family sans
 \shape italic
 AnnotationContributionPostProcessor
 \family default
 \shape default
- und die beiden Resolver Services in einer Basis\SpecialChar \-
+ und die beiden Resolver Services, in einer Basis\SpecialChar \-
 konfigurationsklasse als
  Beans definiert.
  Zusätzlich wird ein eigener 
@@ -9695,12 +9698,12 @@ ImportSelector
 \series default
 @Import
 \family default
- an die, für das Aktivieren der Java-Konfiguration definierte, Annotation
- 
+ an die Annotation 
 \family sans
 @EnableContributions
 \family default
  binden.
+ Diese Annotation ist für das Aktivieren der Java-Konfiguration vorgesehen.
 \end_layout
 
 \begin_layout Standard
@@ -9907,8 +9910,9 @@ reference "lis:SpringContributions-Java:EnableContributions-Annotation"
 \noun on
 SpringContributions
 \noun default
-, in der alle, für die Java-Konfiguration notwendigen, Service-Beans definiert
- sind.
+.
+ In dieser sind alle, für die Java-Konfiguration notwendigen, Service-Beans
+ definiert.
 \end_layout
 
 \begin_layout Standard
@@ -10613,8 +10617,8 @@ on, der Konfiguration entsprechend, zu der Beandefinition des Containers
  In den Klassen, die sich um die Abarbeitung der Konfigurationsdaten kümmern,
  werden die jeweils nötigen Schritte durchgeführt.
  Dabei wird der erste Schritt, also das Erstellens eines Contribution-Containers
-, natürlich für jede spezielle Contribution-Liste oder Contribution-Map
- nur einmal benötigt.
+ für jede spezielle Contribution-Liste oder Contribution-Map, nur einmal
+ benötigt.
  Ist die Beandefinition für eine Contribution-Liste oder Contribution-Map
  bereits erstellt, so können diese Definitionen jederzeit geladen und mit
  Element-Definitionen befüllt werden.
@@ -10640,7 +10644,7 @@ Spring
  unterschiedliche Interfaces und abstrakte Klassen an, mit deren Hilfe das
  Parsen und das Umwandeln der Schlüsselwörter in Beandefinitionen durchgeführt
  werden kann.
- Alle für diesen Zweck entstehenden Parser Implementierungen können dann
+ Alle, für diesen Zweck entstehenden, Parser Implementierungen können dann
  in einem eigenen 
 \family sans
 \shape italic
@@ -10677,7 +10681,8 @@ ContributionsNamespaceHandler
 \family default
 \shape default
  implementiert.
- Einen schematischen Überblick zur Namensraumerweiterung gibt Abbildung
+ Einen schematischen Überblick zur Namens\SpecialChar \-
+raumerweiterung gibt Abbildung
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -10706,7 +10711,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Spring-Namensraum Erweiterung
+Spring-Namensraumerweiterung
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:NamespaceExtentionFlow"
@@ -10778,9 +10783,10 @@ mapped-contribution-ref
 \begin_inset Quotes erd
 \end_inset
 
- werden dafür angeboten, und können beispielsweise dazu dienen, einen Contributi
-on-Container als Konstruktorargument einem konsumierenden Bean zu übergeben
- (siehe Absatz 
+ werden dafür angeboten.
+ Sie können beispielsweise dazu dienen, einen Contribution-Container als
+ Konstruktorargument einem konsumierenden Bean zu übergeben (siehe Absatz
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "par:XML-Elemente-contribution-ref"
@@ -10802,7 +10808,7 @@ Spring
 \shape default
  angeboten, um einzelne Beandefinitionen aus einer XML-Konfiguration zu
  gewinnen.
- Im Falle unserer beiden Referenzierungselemente 
+ Für unserer beiden Referenzierungselemente 
 \begin_inset Quotes eld
 \end_inset
 
@@ -10826,7 +10832,7 @@ mapped-contribution-ref
 \begin_inset Quotes erd
 \end_inset
 
-, wollen wir genau das erreichen, und für den Fall das der referenzierte
+, wollen wir genau das erreichen, und für den Fall, dass der referenzierte
  Contribution-Container noch nicht existiert, diesen erstellen.
  Listing 
 \begin_inset CommandInset ref
@@ -11086,7 +11092,7 @@ mapped-contribution
 \begin_inset Quotes erd
 \end_inset
 
- die als Beankonfigurationelemente der obersten Ebene im XML-File verwendet
+, die als Beankonfigurationelemente der obersten Ebene im XML-File verwendet
  werden.
  Damit es möglich ist, eigene Konfiguration-Metadaten über XML-Elemente
  der obersten Ebene, also direkt unterhalb des Wurzeltags 
@@ -11516,7 +11522,7 @@ parse
 \family default
 \shape default
  Methoden, in denen jeweils nur die einzelnen Elemente identifiziert und
- in eine Liste beziehungsweise in einer Map abgelegt werden.
+ in einer Liste, beziehungsweise in einer Map, abgelegt werden.
  Der Code zum Erstellen des Contribution-Containers ist unabhängig vom Konfigura
 tionstyp und ist daher in eigenen Hilfsklassen (
 \family sans
@@ -11532,7 +11538,7 @@ MappedContributionUtils
 \shape default
 ) umgesetzt, die auch von der Java-Variante der Konfiguration verwendet
  werden.
- Einen Auszug aus einer dieser Klassen zeigen Listing 
+ Einen Auszug aus einer dieser Klassen zeigt Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "lis:MappedContributionUtils-Klasse"
@@ -11831,7 +11837,7 @@ BeanDefinitionDecorator
 \family default
 \shape default
  an.
- Alle beide Schlüsselwörter werden in der 
+ Alle beiden Schlüsselwörter werden in der 
 \family sans
 \shape italic
 BeanDefinitionDecorator
@@ -11958,14 +11964,14 @@ BeanDefinitionRegistryPostProcessor
 \family default
 \shape default
 , welches eine Methode definiert, mit deren Hilfe die, nach der Standardinitiali
-sierung in der IOC-Registry, existierenden Beandefinitionen verändert werden
+sierung in der IOC-Registry existierenden, Beandefinitionen verändert werden
  können.
  Zum Aufrufzeitpunkt dieser Methode existieren also bereits alle Beandefinitione
 n aus der Konfiguration, es wurde aber noch kein einziges Bean auf Basis
  dieser Definitionen vom IOC-Container instanziiert.
- Wie der Postprozessor nun aus der Java-Konfiguration und deren, in Annotationen
- abgelegten Metainformationen, Beandefinitionen für Contribution-Container
- und deren Elemente erstellt ist auszugsweise in Listing 
+ Wie der Postprozessor nun, aus der Java-Konfiguration und den Metainformationen
+, Beandefinitionen für Contribution-Container und deren Elemente erstellt,
+ ist auszugsweise in Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "lis:AnnotationContributionPostprocessor"
@@ -11973,14 +11979,17 @@ reference "lis:AnnotationContributionPostprocessor"
 \end_inset
 
  zu sehen und wird im Folgenden erläutert.
- Als erstes werden, in der Methode 
+\end_layout
+
+\begin_layout Standard
+Als erstes werden, in der Methode 
 \family sans
 \shape italic
 postProcessBeanFactory,
 \family default
 \shape default
  alle Konfiguration-Beans geladen.
- Dabei handelt es sich um Klassen die über die Annotation 
+ Dabei handelt es sich um Klassen, die über die Annotation 
 \family sans
 @Configuration
 \family default
@@ -12330,7 +12339,7 @@ Gemeinsam verwendete Util-Klassen
 \end_layout
 
 \begin_layout Standard
-Die beiden Hilfsklassen, 
+Die beiden Hilfsklassen 
 \family sans
 \shape italic
 OrderContributionUtils
@@ -12339,7 +12348,7 @@ OrderContributionUtils
  und 
 \family sans
 \shape italic
-MappedContributionUtils,
+MappedContributionUtils
 \family default
 \shape default
  werden sowohl beim Abarbeiten einer XML-Konfiguration (siehe Abschnitt
@@ -12350,7 +12359,7 @@ reference "sub:(XML)-Abarbeitung-der-Konfigurationsschlüsselwörter"
 
 \end_inset
 
-) als auch beim Abarbeiten der Java-Konfiguration (siehe Abschnitt 
+), als auch beim Abarbeiten der Java-Konfiguration (siehe Abschnitt 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:(Java)-Abarbeitung-der-Konfigurationsschlüsselwörter"
@@ -12358,7 +12367,7 @@ reference "sub:(Java)-Abarbeitung-der-Konfigurationsschlüsselwörter"
 \end_inset
 
 ) verwendet.
- Diese Synergie ist Möglich, da in beiden Fällen, nach dem unterschiedlichen
+ Diese Synergie ist möglich, da in beiden Fällen, nach dem unterschiedlichen
  Weg der Gewinnung der Konfigurationsinformationen, genau der selbe Schritt
  durchgeführt werden muss.
  Bei diesem Schritt handelt es sich um die finale Registrierung der Beandefiniti
@@ -12616,10 +12625,11 @@ Wenn nun ein Bean, das eine Contribution-Liste benötigt, von der Spring
  IOC-Registry instanziiert wird, so bedient sich diese der 
 \family sans
 \shape italic
-OrderedConfigurationFactoryBean
+OrderedConfigurationFactoryBean,
 \family default
 \shape default
- um die Contribution-Liste zu erhalten.
+ um die Contri\SpecialChar \-
+bution-Liste zu erhalten.
 \end_layout
 
 \begin_layout Standard
@@ -12709,7 +12719,7 @@ Spring
 tionen unterscheiden kann.
  Daher gilt es, bei der Verwendung von 
 \shape italic
-Spring
+Spring,
 \shape default
  auf die Verschiedenheit der Identifikation von Beandefinitionen zu achten.
  In kleinen Software-Projekten ist das relativ leicht zu bewerkstelligen.
@@ -12720,9 +12730,10 @@ Spring
 \shape italic
 Spring
 \shape default
- basierende Module mit einbindet, existiert eine externe nicht beeinflussbare
- Fehlerquelle was die Namenskollisionen betrifft, denn auf die Namensgebung
- in Fremdmodulen hat man keinen Einfluss.
+ basierende Module mit einbindet, existiert bezüglich der Namenskollisionen
+ eine externe, nicht beeinflussbare Fehlerquelle.
+ Das resultiert daraus, da man auf die Namensgebung in Fremdmodulen keinen
+ Einfluss hat.
 \end_layout
 
 \begin_layout Standard
@@ -12886,7 +12897,7 @@ In den folgenden Anwendungsbeispielen folgt den Listings mit XML-Konfiguration
  sogleich ein Listing mit äquivalenter Java-Konfiguration.
  Dies soll der Vergleichbarkeit der beiden Konfigurationsmethoden dienen.
  Die beiden Konfigurationen werden danach in einem Unit-Test verwendet,
- in dem die Contribution so zu sagen in ihrer Verwendung gezeigt wird.
+ in dem die Contribution in ihrer Verwendung gezeigt wird.
 \end_layout
 
 \begin_layout Subsection
@@ -12933,63 +12944,6 @@ reference "lis:(Java) OrderedContributionTest-Konfiguration"
 
  wird, als Gegenüberstellung zur XML-Konfiguration, die analoge Java-Konfigurati
 on angegeben.
-\end_layout
-
-\begin_layout Standard
-In dem Beispiel wird ein 
-\family sans
-\shape italic
-ValueHolder
-\family default
-\shape default
- Service als Spring-Bean, sowie eine
-\family sans
-\shape italic
- 
-\family default
-\shape default
-sortierte Contribution-Liste mit dem Namen 
-\family sans
-\shape italic
-"value-list"
-\family default
-\shape default
- definiert werden.
- Das 
-\family sans
-\shape italic
-ValueHolder
-\family default
-\shape default
- Service erwartet die Contribution-Liste als Konstruktor-Argument.
- Innerhalb der Contribution-Liste sind zwei Strings ("
-\family sans
-\shape italic
-String 1
-\family default
-\shape default
-", "
-\family sans
-\shape italic
-String 2
-\family default
-\shape default
-") als Elemente definiert.
- Jedem Element wird durch seine jeweiligen 
-\begin_inset Quotes eld
-\end_inset
-
-
-\family sans
-\shape italic
-constraints
-\family default
-\shape default
-
-\begin_inset Quotes eld
-\end_inset
-
- Einstellungen eine bestimmte Position innerhalb der Liste zugewiesen.
 \end_layout
 
 \begin_layout Standard
@@ -13275,6 +13229,63 @@ lver<String> values)
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+In dem Beispiel wird ein 
+\family sans
+\shape italic
+ValueHolder
+\family default
+\shape default
+ Service als Spring-Bean sowie eine
+\family sans
+\shape italic
+ 
+\family default
+\shape default
+sortierte Contribution-Liste mit dem Namen 
+\family sans
+\shape italic
+"value-list"
+\family default
+\shape default
+ definiert werden.
+ Das 
+\family sans
+\shape italic
+ValueHolder
+\family default
+\shape default
+ Service erwartet die Contribution-Liste als Konstruktor-Argument.
+ Innerhalb der Contribution-Liste sind zwei Strings ("
+\family sans
+\shape italic
+String 1
+\family default
+\shape default
+", "
+\family sans
+\shape italic
+String 2
+\family default
+\shape default
+") als Elemente definiert.
+ Jedem Element wird durch seine jeweiligen 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family sans
+\shape italic
+constraints
+\family default
+\shape default
+
+\begin_inset Quotes eld
+\end_inset
+
+ Einstellungen eine bestimmte Position innerhalb der Liste zugewiesen.
 \end_layout
 
 \begin_layout Standard
@@ -13621,10 +13632,7 @@ aus dem Umstand, dass jede Contribution als eigenes Bean behandelt wird.
  Ein Contribution-Container-Bean kann also nicht nur von einem Konsumenten
  verwendet werden, sondern steht, wie jedes andere Bean, zur beliebigen
  Verwendung bereit.
- Nehmen also zum Beispiel zwei Services eine Liste von Klassen des selben
- Typs als Servicekonfiguration entgegen, so muss jedes Element dieser Liste,
- sofern sich die Liste in ihrer Zusammenstellung nicht unterscheiden soll,
- nur ein einziges mal 
+ Nehmen also zum Beispiel zwei Services eine Liste von Klassen des 
 \begin_inset VSpace bigskip
 \end_inset
 
@@ -13810,16 +13818,18 @@ public String singletonTwo()
 \begin_inset VSpace bigskip
 \end_inset
 
-konfiguriert werden.
- Es ist also egal von wie vielen Beans die Contribution anschließend verwendet
+selben Typs als Servicekonfiguration entgegen, so muss jedes Element dieser
+ Liste, sofern sich die Liste in ihrer Zusammenstellung nicht unterscheiden
+ soll, nur ein einziges Mal konfiguriert werden.
+ Es ist also egal, von wie vielen Beans die Contribution anschließend verwendet
  wird.
  In 
 \shape italic
 Tapestry
 \shape default
  müsste man für dasselbe Beispiel jedem Service eine eigene Contribution-Liste
- übergeben und dafür wäre es notwendig jedes Element für jede dieser Listen
- zu konfigurieren.
+ übergeben.
+ Dafür wäre es notwendig, jedes Element für jede dieser Listen zu konfigurieren.
  Listing 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -13839,7 +13849,7 @@ Gefahren durch mehrfaches Konsumieren
 Natürlich birgt die Möglichkeit der uneingeschränkten Verwendung von Contributio
 ns durch mehrere Konsumenten auch Risiken, auf die in der Verwendung acht
  gegeben werden muss.
- So, muss man in der derzeitigen Umsetzung der 
+ So muss man in der derzeitigen Umsetzung der 
 \noun on
 SpringContributions
 \noun default
@@ -14158,9 +14168,9 @@ Tapestry
  bekannten Contribution-Mechanismus für das Spring-Framework behandelt.
  Damit haben wir jetzt die Grundlage geschaffen, um uns einem weiteren Schritt
  zu widmen.
- Einer der, zumindest in der Porsche Informatik, am meisten genutzten Dienste,
- die das Tapestry-Framework aufbauend auf dem Contribution-Mechanismus anbietet,
- ist der des 
+ Einer der, auf jeden Fall in der Porsche Informatik, am meisten genutzten
+ Dienste, den das Tapestry-Framework aufbauend auf dem Contribution-Mechanismus
+ anbietet, ist der des 
 \begin_inset Quotes eld
 \end_inset
 
@@ -14175,14 +14185,14 @@ StrategyBuilder
 \end_inset
 
 .
- Aus diesem Grund ist es auch Ziel des praktischen Teils dieser Arbeit,
- auch diesen Dienst innerhalb der 
+ Aus diesem Grund ist es ein notwendiges Ziel des praktischen Teils dieser
+ Arbeit, auch diesen Dienst innerhalb der 
 \noun on
 SpringContributions
 \noun default
  anzubieten.
  In diesem Abschnitt sollen nun die Funktionsweise dieses Dienstes beschrieben
- und dessen Adaption für 
+ und seine Adaption für 
 \shape italic
 Spring
 \shape default
@@ -14211,7 +14221,7 @@ key "Gamma:1995"
 \end_inset
 
  wurde 1995 eine Sammlung von Designmustern veröffentlicht deren Verwendung
- sich im allgemeinen positiv auf die Qualität von Software auswirken.
+ sich im Allgemeinen positiv auf die Qualität von Software auswirken.
  Das 
 \begin_inset Quotes eld
 \end_inset
@@ -14236,7 +14246,7 @@ StrategyBuilder
 \begin_layout Quotation
 eine Familie von Algorithmen zu definieren, wobei es einen jeden kapselt
  und austauschbar macht.
- Eine Strategy ermöglicht den Clients, die sie verwenden, den Algorithmus
+ Eine Strategy ermöglicht den Klienten, die sie verwenden, den Algorithmus
  unabhängig zu variieren.
  
 \begin_inset CommandInset citation
@@ -14277,7 +14287,7 @@ Tapestry
  Das bedeutet, dass eine gewisse Anzahl an unterschiedlichen Strategien
  - damit sind gekapselte Algorithmen gemeint - dem Strategy-Service übergeben
  werden.
- Die Entscheidung eines Clients welche Strategie er verwenden will, wird
+ Die Entscheidung eines Klienten, welche Strategie er verwenden will, wird
  in 
 \shape italic
 Tapestry
@@ -14319,17 +14329,20 @@ Intelligenz
 \end_inset
 
  des Strategy-Services zeigt sich in einem weiteren Detail.
- Will ein Client eine Strategie auf ein Objekt anwenden, für dessen Klassen-Typ
+ Will ein Klient eine Strategie auf ein Objekt anwenden, für dessen Klassen-Typ
  eigentlich keine Strategie konfiguriert wurde, so verhält sich das Stretegy-Ser
 vice in 
 \shape italic
 Tapestry
 \shape default
- folgendermaßen.
- Wenn also für den konkreten Klassen-Typ des Objekts keine Strategie gefunden
+ folgendermaßen:
+\end_layout
+
+\begin_layout Standard
+Wenn also für den konkreten Klassen-Typ des Objekts keine Strategie gefunden
  wurde, so wird für jede Superklasse geschaut, ob eine Strategie verfügbar
  ist.
- Die Suche wird für die komplette Hierarchie der Superklassen fortgesetzt
+ Die Suche wird für die komplette Hierarchie der Superklassen fortgesetzt,
  bis entweder eine Strategie gefunden wurde und diese auf das Objekt angewandt
  werden kann, oder bis man beim Klassen-Typ 
 \family sans
@@ -14373,8 +14386,8 @@ StrategyFactoryBean
 FactoryBean
 \family default
 \shape default
- implementiert werden, die dem Client die gesuchte Strategie als Bean instanziie
-rt und zur Verfügung stellt.
+ implementiert werden, die dem Klienten die gesuchte Strategie als Bean
+ instanziiert und zur Verfügung stellt.
  Implementierungen des Interfaces 
 \family sans
 \shape italic
@@ -14417,7 +14430,7 @@ StrategyFactoryBean
 \end_layout
 
 \begin_layout Paragraph*
-Beispiel
+Beispiel:
 \end_layout
 
 \begin_layout Standard
@@ -14470,8 +14483,8 @@ Strategy Pattern
  verwendet werden kann.
  Dabei werden drei von einander verschiedene Algorithmen als Strategien
  konfiguriert.
- Jede dieser Strategien benötigt nun auch eine eigene Java-Klasse, die ihr
- zur Identifizierung in der Contribution-Map als Schlüssel zugewiesen wird.
+ Jede dieser Strategien benötigt nun auch eine eigene Java-Klasse, die ihr,
+ zur Identifizierung in der Contribution-Map, als Schlüssel zugewiesen wird.
  Ein Objekt dieser Schlüsselklasse wird in der Anwendung dann auch den zu
  formatierenden String enthalten.
  
@@ -14845,11 +14858,6 @@ SpringContributions
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
-
-...
 \end_layout
 
 \begin_layout Plain Layout
@@ -15406,9 +15414,6 @@ FOOBAR
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Box Shadowbox
 position "t"
 hor_pos "c"
@@ -15444,10 +15449,6 @@ name "spring-contributions-strategy-test"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -15627,7 +15628,7 @@ SpringContributions
 \noun default
  ist es nun also noch einfacher, im Zusammenspiel mit dem Spring-Framework,
  hoch konfigurierbare, multimodulare Softwareprojekte zu realisieren.
- Gleichzeitig besteht nun die Möglichkeit, ein auf dem Tapestry-Framework
+ Gleichzeitig besteht nun die Möglichkeit, eine auf dem Tapestry-Framework
  basierende Softwarearchitektur, ohne Einbußen in der Konfigurierbarkeit,
  mit 
 \shape italic
@@ -15642,7 +15643,7 @@ SpringContributions
 \shape italic
 Tapestry
 \shape default
- entwickelte und auf dem Contribution-Mechanismus basierende Softwarekomponenten
+ entwickelte und auf dem Contribution-Mechanismus basierende Softwarekomponente
  von Tapestry-IOC auf Spring-IOC zu migrieren, ohne dabei die Konfigurierbarkeit
  der Software grundlegend anpassen zu müssen.
  Dies alles öffnet also den Weg dahin, zwei äußerst hilfreiche Frameworks
@@ -15661,7 +15662,7 @@ SpringContributions
 \noun default
  kommt hier innerhalb einer B2B Webapplikation zum Gebrauchtwagenverkauf,
  in einer Verrechnungssoftware und in der Neuentwicklung eines Händlersystems
- zu Einsatz.
+ zum Einsatz.
  In dieser Version ist bereits die komplette XML-Konfiguration inklusive
  der 
 \shape italic
@@ -15672,7 +15673,7 @@ Strategy Pattern
 \shape italic
 Tapestry
 \shape default
- entwickelte Webapplikation um die Funktionsumfang von 
+ entwickelte Webapplikation um den Funktionsumfang von 
 \shape italic
 Spring
 \shape default
@@ -15701,8 +15702,8 @@ status open
 \shape italic
 Apache Maven
 \shape default
- ist eine Build-Management Werkzeug zum standardisierten Erstellen von Java-Prog
-rammen
+ ist ein Build-Management Werkzeug zum standardisierten Erstellen von Java-Progr
+ammen
 \end_layout
 
 \end_inset
@@ -15818,7 +15819,7 @@ reference "par:Eingriff-während-der-Registrierung_Variante-1"
 \shape italic
 Spring
 \shape default
- umgesetzten Prozess der Beandefinition-Erstellung für Java-Konfigurationen,
+ umgesetzten Prozess der Beandefinition-Erstellung für Java-Konfigurationen
  erneut selbst entwickeln müsste.
  Hierbei wäre es dann möglich, das Augenmerk darauf zu legen, eigens für
  die Contribution-Kofiguration geeignete Konfigurationsmethoden zu entwickeln,
@@ -15833,7 +15834,7 @@ Bei dieser Verbesserung müsste man aber mehrere Problemstellungen überwinden.
 \shape italic
 Spring
 \shape default
- wiederzuverwenden beziehungsweise zu erweitern.
+ wiederzuverwenden, beziehungsweise zu erweitern.
  Leider eignet sich die derzeitige Implementierung des Fameworks in dem
  Bereich nicht gut zur Wiederverwendung oder Erweiterung.
  Da die derzeitige Codebasis im Spring-Framework hier leider nicht leicht
@@ -15890,8 +15891,8 @@ BeanFactory
 BeanFactory
 \family default
 \shape default
- bei jeder Anfrage nach einem Bean von einem bestimmten Typ, jedes Mal eine
- neue Instanz erstellen und dem Konsumenten bereitstellen.
+ immer eine neue Instanz erstellen und dem jeweiligen Konsumenten übergeben,
+ wenn eine Anfrage nach einem Bean eines bestimmten Typs gemacht wird.
  Zum anderen ist es möglich, dass die 
 \family sans
 \shape italic
@@ -15899,7 +15900,7 @@ BeanFactory
 \family default
 \shape default
  einmalig eine Instanz des Beans erstellt und diese Instanz bei jedem Aufruf
- eines Konsumenten weitergibt.
+ durch einen Konsumenten an diesen weitergibt.
 \end_layout
 
 \begin_layout Standard
@@ -15967,12 +15968,13 @@ SpringContributions
  konfiguriert ist.
  Davon hängt es nämlich ab, ob ein Contribution-Container als einzelnes
  Objekt unter allen Konsumenten geteilt wird oder nicht.
- Der Unterschied ist deshalb wichtig weil im Falle des Singleton Scope,
+ Der Unterschied ist deshalb wichtig, weil im Falle des Singleton Scope,
  ein Konsument nicht die alleinige Kontrolle über den Zustand des Containers
  und seiner Elemente inne hat.
  Es kann also vorkommen, dass die Art, als auch die Anzahl der Elemente
  in einem Container zur Laufzeit von anderen Konsumenten geändert werden.
- Dies kann je nach Anwendungsfall erwünscht oder auch nicht erwünscht sein.
+ Dies kann, je nach Anwendungsfall, erwünscht oder auch nicht erwünscht
+ sein.
 \end_layout
 
 \begin_layout Standard
