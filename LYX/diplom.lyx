@@ -5893,10 +5893,13 @@ Tapestry
  Variablen zuzugreifen.
  Dabei kann dann natürlich auch die Syntaxprüfung des Compilers genutzt
  werden.
- Verwendet man jedoch den in Spring gängigen Weg der Java-Konfiguration
- und benutzt hauptsächlich Annotationen als Konfigurations-Metadaten, dann
- fällt die Unterstützung der Syntaxprüfung durch den Compiler, in Zusammenhang
- mit verwendeten Objekten bzw.
+ Verwendet man jedoch den in 
+\shape italic
+Spring
+\shape default
+ gängigen Weg der Java-Konfiguration und benutzt hauptsächlich Annotationen
+ als Konfigurations-Metadaten, dann fällt die Unterstützung der Syntaxprüfung
+ durch den Compiler, in Zusammenhang mit verwendeten Objekten bzw.
  Variablen, dieser Entscheidung zum Opfer.
  Das liegt daran, dass es in Annotationen nicht möglich ist, Objektreferenzen
  als Parameter anzugeben.
@@ -10616,7 +10619,7 @@ on, der Konfiguration entsprechend, zu der Beandefinition des Containers
  hinzugefügt werden.
  In den Klassen, die sich um die Abarbeitung der Konfigurationsdaten kümmern,
  werden die jeweils nötigen Schritte durchgeführt.
- Dabei wird der erste Schritt, also das Erstellens eines Contribution-Containers
+ Dabei wird der erste Schritt, also das Erstellen eines Contribution-Containers
  für jede spezielle Contribution-Liste oder Contribution-Map, nur einmal
  benötigt.
  Ist die Beandefinition für eine Contribution-Liste oder Contribution-Map
